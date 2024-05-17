@@ -84,8 +84,6 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 (view, hourOfDay, minute1) -> {
-                    System.out.println(hour);
-                    System.out.println(hourOfDay);
                     if (hourOfDay < hour || (hourOfDay == hour && minute1 < minute)) {
                         Toast.makeText(this, "Please select a future time", Toast.LENGTH_SHORT).show();
                     }
