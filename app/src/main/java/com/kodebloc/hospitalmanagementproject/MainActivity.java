@@ -2,7 +2,6 @@ package com.kodebloc.hospitalmanagementproject;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
@@ -26,14 +25,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize button
         Button btnPatientRegister = findViewById(R.id.btnPatientRegister);
+        Button btnAppointmentScheduling = findViewById(R.id.btnAppointmentScheduling);
 
-        // Set click listener for the button
-        btnPatientRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Open Patient Registration Activity
-                startActivity(new Intent(MainActivity.this, PatientRegistrationActivity.class));
-            }
+        // Set click listener to redirect to Patient Registration Screen
+        btnPatientRegister.setOnClickListener(v -> {
+            // Open Patient Registration Activity
+            startActivity(new Intent(MainActivity.this, PatientRegistrationActivity.class));
+        });
+
+        // Set click listener to redirect to Booking Appointment Screen
+        btnAppointmentScheduling.setOnClickListener(v -> {
+            // Open Appointment Scheduling Activity
+            startActivity(new Intent(MainActivity.this, AppointmentSchedulingActivity.class));
         });
     }
 }

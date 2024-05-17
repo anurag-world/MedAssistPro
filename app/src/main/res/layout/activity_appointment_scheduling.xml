@@ -2,9 +2,73 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/activity_appointment_scheduling"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AppointmentSchedulingActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:context=".AppointmentSchedulingActivity">
+
+        <!-- Title TextView -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/schedule_appointment"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Patient Name EditText -->
+        <EditText
+            android:id="@+id/etPatientName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/patient_name"
+            android:inputType="textPersonName"
+            android:autofillHints="name" />
+
+        <!-- Doctor/Specialist/Department Spinner -->
+        <Spinner
+            android:id="@+id/spinnerDoctor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:spinnerMode="dropdown" />
+
+        <!-- Appointment Date EditText -->
+        <EditText
+            android:id="@+id/etAppointmentDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/appointment_date"
+            android:inputType="date"
+            android:autofillHints="date"
+            android:layout_marginTop="16dp" />
+
+        <!-- Appointment Time EditText -->
+        <EditText
+            android:id="@+id/etAppointmentTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/appointment_time"
+            android:inputType="time"
+            android:autofillHints="time"
+            android:layout_marginTop="16dp" />
+
+        <!-- Book Appointment Button -->
+        <Button
+            android:id="@+id/btnBookAppointment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/book_appointment_btn"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
