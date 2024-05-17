@@ -24,6 +24,15 @@
             android:textSize="18sp"
             app:cornerRadius="4dp" />
 
+        <Button
+            android:id="@+id/btnAppointmentScheduling"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:text="@string/appointment_scheduling_main"
+            android:textSize="18sp"
+            app:cornerRadius="4dp" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

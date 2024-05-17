@@ -8,4 +8,12 @@
     <string name="emergency_contact">Emergency Contact</string>
     <string name="patient_registration">Patient Registration</string>
     <string name="patient_registration_main">Patient Registration</string>
+    <string name="schedule_appointment">Schedule Appointment</string>
+    <string name="patient_name">Patient Name</string>
+    <string name="appointment_date">Appointment Date</string>
+    <string name="appointment_time">Appointment Time</string>
+    <string name="book_appointment_btn">Book Appointment</string>
+    <string name="appointment_scheduling_main">Book Appointment</string>
+    <string name="date_format">%1$d/%2$d/%3$d</string>
+    <string name="time_format">%1$d:%2$02d %3$s</string>
 </resources>
