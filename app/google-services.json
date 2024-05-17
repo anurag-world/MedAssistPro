@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "225527538707",
+    "project_id": "hospital-management-db",
+    "storage_bucket": "hospital-management-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225527538707:android:ca1e7a441f8d6f2e328be6",
+        "android_client_info": {
+          "package_name": "com.kodebloc.hospitalmanagementproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3GoRXjHOJnzuNp-vyFMkD4XqcnxRsMtk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
