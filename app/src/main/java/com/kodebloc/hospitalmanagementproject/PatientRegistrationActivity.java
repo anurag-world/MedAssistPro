@@ -1,7 +1,9 @@
 package com.kodebloc.hospitalmanagementproject;
 
 import android.os.Bundle;
-import android.view.View;
+import android.text.TextUtils;
+import android.util.Log;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.kodebloc.hospitalmanagementproject.utility.SecurityUtils;
 
 public class PatientRegistrationActivity extends AppCompatActivity {
     private EditText etFullName, etAge, etMedicalHistory, etInsuranceInfo, etEmergencyContact;
@@ -35,22 +39,82 @@ public class PatientRegistrationActivity extends AppCompatActivity {
         etEmergencyContact = findViewById(R.id.etEmergencyContact);
         btnRegister = findViewById(R.id.btnRegister);
 
-        // Register patient button click listener
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle patient registration logic here
-                String fullName = etFullName.getText().toString().trim();
-                String age = etAge.getText().toString().trim();
-                String medicalHistory = etMedicalHistory.getText().toString().trim();
-                String insuranceInfo = etInsuranceInfo.getText().toString().trim();
-                String emergencyContact = etEmergencyContact.getText().toString().trim();
+        try {
+            SecurityUtils.generateKey(); // Generate the encryption key once
+        } catch (Exception e) {
+            Log.e("GenerateEncryptionError", "An error occurred:", e);
+            Toast.makeText(this, "Error initializing encryption key", Toast.LENGTH_SHORT).show();
+        }
 
-                // Perform validation and database operations here
-                // For simplicity, let's just display the entered data
-                displayPatientInfo(fullName, age, medicalHistory, insuranceInfo, emergencyContact);
+        // Register patient button click listener
+        btnRegister.setOnClickListener(v -> {
+            // Validate user input before registration
+            if (validateInput()) {
+                // If input is valid, encrypt sensitive data and register patient
+                registerPatient();
             }
         });
+    }
+
+    // Method to validate user input
+    private boolean validateInput() {
+        String fullName = etFullName.getText().toString().trim();
+        String age = etAge.getText().toString().trim();
+        String medicalHistory = etMedicalHistory.getText().toString().trim();
+        String insuranceInfo = etInsuranceInfo.getText().toString().trim();
+        String emergencyContact = etEmergencyContact.getText().toString().trim();
+
+        // Check if any required field is empty
+        if (TextUtils.isEmpty(fullName) || TextUtils.isEmpty(age) ||
+                TextUtils.isEmpty(medicalHistory) || TextUtils.isEmpty(insuranceInfo) ||
+                TextUtils.isEmpty(emergencyContact)) {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Validate age format
+        try {
+            int ageValue = Integer.parseInt(age);
+            if (ageValue <= 0) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Please enter a valid age", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Validate emergency contact format
+        if (!Patterns.PHONE.matcher(emergencyContact).matches()) {
+            Toast.makeText(this, "Please enter a valid emergency contact number", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Validation passed
+        return true;
+    }
+
+    // Method to register patient after validation and encryption
+    private void registerPatient() {
+        // Get user input
+        String fullName = etFullName.getText().toString().trim();
+        String age = etAge.getText().toString().trim();
+        String medicalHistory = etMedicalHistory.getText().toString().trim();
+        String insuranceInfo = etInsuranceInfo.getText().toString().trim();
+        String emergencyContact = etEmergencyContact.getText().toString().trim();
+
+        try {
+            // Encrypt sensitive data
+            String encryptedMedicalHistory = SecurityUtils.encryptData(medicalHistory);
+            String encryptedInsuranceInfo = SecurityUtils.encryptData(insuranceInfo);
+            String encryptedEmergencyContact = SecurityUtils.encryptData(emergencyContact);
+
+            // Perform patient registration with encrypted data
+            // For now, display encrypted data for testing purposes
+            displayPatientInfo(fullName, age, encryptedMedicalHistory, encryptedInsuranceInfo, encryptedEmergencyContact);
+        } catch (Exception e) {
+            Log.e("RegisterPatientError", "An error occurred:", e);
+            Toast.makeText(this, "Error encrypting data", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Method to display patient information (for testing purposes)
