@@ -19,9 +19,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.kodebloc.hospitalmanagementproject.model.UserCallback;
 import com.kodebloc.hospitalmanagementproject.model.UsersData;
 
@@ -36,11 +33,9 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
     private EditText etAppointmentDate, etAppointmentTime;
     private Spinner spinnerDoctor;
     private Button btnBookAppointment;
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-    private FirebaseUser currentUser;
     private UsersData usersData;
     private String fullName;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,12 +65,7 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
 
-        // Initialize Firestore
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-
-        // Get the current user's data
-        currentUser = mAuth.getCurrentUser();
+        // Initialize Firebase Auth
         usersData = new UsersData();
 
         // Initialize UI elements
@@ -94,6 +84,9 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
                     Log.d("TAG", "User Data: " + userData);
                     // Example: Get full name
                     fullName = Objects.requireNonNull(userData.get("fullName")).toString();
+                    // TODO: change id to uid
+                    uid = Objects.requireNonNull(userData.get("id")).toString();
+
                     // Set the patient name in the UI
                     String getName = getString(R.string.booking_patient_name, fullName);
                     patientNameUI.setText(getName);
@@ -175,21 +168,20 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
             return;
         }
 
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
+        if (usersData.getCurrentUser() != null) {
 
             // Create a map to hold appointment details
             Map<String, Object> appointmentData = new HashMap<>();
 
             // Add appointment details to the map
-            appointmentData.put("userId", userId);
+            appointmentData.put("userId", uid);
             appointmentData.put("patientName", fullName);
             appointmentData.put("doctor", doctor);
             appointmentData.put("appointmentDate", appointmentDate);
             appointmentData.put("appointmentTime", appointmentTime);
 
             // Save appointment details to Firestore
-            db.collection("appointments")
+            usersData.getDb().collection("appointments")
                     .add(appointmentData)
                     .addOnSuccessListener(documentReference -> {
                         Log.d("AppointmentSchedulingActivity", "Appointment booked successfully");
