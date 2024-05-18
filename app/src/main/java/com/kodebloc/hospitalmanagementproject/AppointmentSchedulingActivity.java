@@ -3,6 +3,8 @@ package com.kodebloc.hospitalmanagementproject;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -37,6 +39,23 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Set up the action bar with title and back button
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Schedule an Appointment");
+            actionBar.setDisplayHomeAsUpEnabled(true); // Enable back button
+        }
+
+        // Handle the back button press
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Navigate back to the previous activity
+                finish();
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
+
         // Initialize UI elements
         etPatientName = findViewById(R.id.etPatientName);
         spinnerDoctor = findViewById(R.id.spinnerDoctor);
@@ -59,6 +78,14 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
         // Book appointment button click listener
         btnBookAppointment.setOnClickListener(v -> bookAppointment());
 
+    }
+
+    // Handle back button press
+    @Override
+    public boolean onSupportNavigateUp() {
+        // Handle the action bar's up button
+        finish();
+        return true;
     }
 
     // Method to show date picker dialog
