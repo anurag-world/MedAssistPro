@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -45,6 +47,23 @@ public class PatientRegistrationActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Set up the action bar with title and back button
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Patient Registration");
+            actionBar.setDisplayHomeAsUpEnabled(true); // Enable back button
+        }
+
+        // Handle the back button press
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Navigate back to the previous activity
+                finish();
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
+
         // Initialize Firebase instance
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -72,6 +91,14 @@ public class PatientRegistrationActivity extends AppCompatActivity {
                 registerPatient();
             }
         });
+    }
+
+    // Handle back button press
+    @Override
+    public boolean onSupportNavigateUp() {
+        // Handle the action bar's up button
+        finish();
+        return true;
     }
 
     // Method to validate user input
