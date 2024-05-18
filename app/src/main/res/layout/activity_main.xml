@@ -16,10 +16,21 @@
 
         <!-- Button to navigate to Patient Registration Activity -->
         <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/login"
+            android:textSize="18sp"
+            app:cornerRadius="4dp" />
+
+        <Button
             android:id="@+id/btnPatientRegister"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:paddingVertical="12dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/patient_registration_main"
             android:textSize="18sp"
             app:cornerRadius="4dp" />
@@ -29,6 +40,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:paddingVertical="12dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/appointment_scheduling_main"
             android:textSize="18sp"
             app:cornerRadius="4dp" />

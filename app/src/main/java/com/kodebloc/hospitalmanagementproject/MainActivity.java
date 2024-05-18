@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.FirebaseApp;
+import com.kodebloc.hospitalmanagementproject.login.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,8 +29,15 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
 
         // Initialize button
+        Button btnLogin = findViewById(R.id.btnLogin);
         Button btnPatientRegister = findViewById(R.id.btnPatientRegister);
         Button btnAppointmentScheduling = findViewById(R.id.btnAppointmentScheduling);
+
+        // Set click listener to redirect to Login Screen
+        btnLogin.setOnClickListener(v -> {
+            // Open Login Activity
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        });
 
         // Set click listener to redirect to Patient Registration Screen
         btnPatientRegister.setOnClickListener(v -> {
