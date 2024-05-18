@@ -1,6 +1,15 @@
 package com.kodebloc.hospitalmanagementproject;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
@@ -10,23 +19,23 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
-import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TimePicker;
-import android.widget.Toast;
+import com.kodebloc.hospitalmanagementproject.model.UserCallback;
+import com.kodebloc.hospitalmanagementproject.model.UsersData;
+
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class AppointmentSchedulingActivity extends AppCompatActivity {
 
-    private EditText etPatientName, etAppointmentDate, etAppointmentTime;
+    private TextView patientNameUI;
+    private EditText etAppointmentDate, etAppointmentTime;
     private Spinner spinnerDoctor;
     private Button btnBookAppointment;
+    private UsersData usersData;
+    private String fullName;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +65,36 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
 
+        // Initialize Firebase Auth
+        usersData = new UsersData();
+
         // Initialize UI elements
-        etPatientName = findViewById(R.id.etPatientName);
+        patientNameUI = findViewById(R.id.patientNameUI);
         spinnerDoctor = findViewById(R.id.spinnerDoctor);
         etAppointmentDate = findViewById(R.id.etAppointmentDate);
         etAppointmentTime = findViewById(R.id.etAppointmentTime);
         btnBookAppointment = findViewById(R.id.btnBookAppointment);
+
+        // Retrieve data and handle it using a callback
+        usersData.getUsers(new UserCallback() {
+            @Override
+            public void onCallback(Map<String, Object> userData) {
+                if (userData != null) {
+                    // Handle the retrieved data
+                    Log.d("TAG", "User Data: " + userData);
+                    // Example: Get full name
+                    fullName = Objects.requireNonNull(userData.get("fullName")).toString();
+                    // TODO: change id to uid
+                    uid = Objects.requireNonNull(userData.get("id")).toString();
+
+                    // Set the patient name in the UI
+                    String getName = getString(R.string.booking_patient_name, fullName);
+                    patientNameUI.setText(getName);
+                } else {
+                    Log.d("TAG", "No user data found");
+                }
+            }
+        });
 
         // Set up spinner with doctors/specialists/departments
         String[] doctors = {"Dr. Smith - Cardiology", "Dr. Jones - Neurology", "Dr. Brown - Orthopedics"};
@@ -113,8 +146,7 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
                 (view, hourOfDay, minute1) -> {
                     if (hourOfDay < hour || (hourOfDay == hour && minute1 < minute)) {
                         Toast.makeText(this, "Please select a future time", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                    } else {
                         String ampm = hourOfDay < 12 ? "AM" : "PM";
                         String timeString = getString(R.string.time_format, hourOfDay, minute1, ampm);
                         etAppointmentTime.setText(timeString);
@@ -126,23 +158,50 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
 
     // Method to book an appointment
     private void bookAppointment() {
-        String patientName = etPatientName.getText().toString().trim();
         String doctor = spinnerDoctor.getSelectedItem().toString();
         String appointmentDate = etAppointmentDate.getText().toString().trim();
         String appointmentTime = etAppointmentTime.getText().toString().trim();
 
         // Validate input
-        if (patientName.isEmpty() || appointmentDate.isEmpty() || appointmentTime.isEmpty()) {
+        if (fullName.isEmpty() || appointmentDate.isEmpty() || appointmentTime.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Simulate booking appointment (in a real app, you would save this to a database)
-        String appointmentInfo = "Appointment booked for " + patientName + "\n" +
+        if (usersData.getCurrentUser() != null) {
+
+            // Create a map to hold appointment details
+            Map<String, Object> appointmentData = new HashMap<>();
+
+            // Add appointment details to the map
+            appointmentData.put("userId", uid);
+            appointmentData.put("patientName", fullName);
+            appointmentData.put("doctor", doctor);
+            appointmentData.put("appointmentDate", appointmentDate);
+            appointmentData.put("appointmentTime", appointmentTime);
+
+            // Save appointment details to Firestore
+            usersData.getDb().collection("appointments")
+                    .add(appointmentData)
+                    .addOnSuccessListener(documentReference -> {
+                        Log.d("AppointmentSchedulingActivity", "Appointment booked successfully");
+                        Toast.makeText(this, "Appointment booked successfully", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("AppointmentSchedulingActivity", "Error booking appointment", e);
+                        Toast.makeText(this, "Error booking appointment", Toast.LENGTH_SHORT).show();
+                    });
+
+        } else {
+            // User is not signed in, show a message
+            Toast.makeText(this, "Please sign in to book an appointment", Toast.LENGTH_SHORT).show();
+        }
+
+        // Log the booked appointment details
+        String appointmentInfo = "Appointment booked for " + fullName + "\n" +
                 "With: " + doctor + "\n" +
                 "On: " + appointmentDate + " at " + appointmentTime;
         System.out.println(appointmentInfo);
-        Toast.makeText(this, appointmentInfo, Toast.LENGTH_LONG).show();
     }
 
 }
