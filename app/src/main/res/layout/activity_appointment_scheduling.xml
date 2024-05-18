@@ -64,7 +64,7 @@
         <Button
             android:id="@+id/btnBookAppointment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:paddingVertical="12dp"
             android:text="@string/book_appointment_btn"
             android:textSize="16sp"

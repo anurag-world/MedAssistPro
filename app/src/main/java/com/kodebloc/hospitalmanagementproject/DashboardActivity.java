@@ -23,6 +23,7 @@ import java.util.Objects;
 public class DashboardActivity extends AppCompatActivity {
     private TextView dashboardWelcomeText;
     private Button btnLogout;
+    Button btnAppointmentScheduling;
     private UsersData usersData;
     private String fullName;
 
@@ -49,6 +50,7 @@ public class DashboardActivity extends AppCompatActivity {
         // Initialize UI elements
         dashboardWelcomeText = findViewById(R.id.dashboardWelcomeText);
         btnLogout = findViewById(R.id.btnLogout);
+        btnAppointmentScheduling = findViewById(R.id.btnAppointmentScheduling);
 
         // Retrieve data and handle it using a callback
         usersData.getUsers(new UserCallback() {
@@ -69,6 +71,7 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
+        // Set click listener for the logout button
         btnLogout.setOnClickListener(v -> {
             usersData.logout();
             // After signing out, redirect the user to the login activity
@@ -76,6 +79,13 @@ public class DashboardActivity extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish(); // Close the current activity
+        });
+
+        // Set click listener to redirect to Booking Appointment Screen
+        btnAppointmentScheduling.setOnClickListener(v -> {
+            // Open Appointment Scheduling Activity
+            Intent intent = new Intent(DashboardActivity.this, AppointmentSchedulingActivity.class);
+            startActivity(intent);
         });
     }
 }
