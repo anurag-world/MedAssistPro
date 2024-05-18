@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.kodebloc.hospitalmanagementproject.AppointmentSchedulingActivity;
+import com.kodebloc.hospitalmanagementproject.DashboardActivity;
 import com.kodebloc.hospitalmanagementproject.PatientRegistrationActivity;
 import com.kodebloc.hospitalmanagementproject.R;
 
@@ -125,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             Log.v(TAG, user.getUid());
-            Intent intent = new Intent(LoginActivity.this, AppointmentSchedulingActivity.class);
+            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
             startActivity(intent);
             finish();
         }

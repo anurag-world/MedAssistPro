@@ -16,6 +16,7 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="register_patient">Register as Patient</string>
+    <string name="logout">logout</string>
 
     <!--- Appointment Activity -->
     <string name="booking_patient_name">Booking Appointment for %1$s</string>
@@ -25,4 +26,10 @@
     <string name="appointment_time">Appointment Time</string>
     <string name="book_appointment_btn">Book Appointment</string>
     <string name="appointment_scheduling_main">Book Appointment</string>
+
+    <!-- Dashboard Activity -->
+    <string name="dashboard">Dashboard</string>
+    <string name="welcome_text">Welcome, %1$s</string>
+    <string name="dash_profile_btn">Profile</string>
+    <string name="view_all_appointments_btn">View All Appointments</string>
 </resources>

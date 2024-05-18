@@ -27,18 +27,6 @@
             app:cornerRadius="4dp"
             android:textColor="@color/text" />
 
-        <Button
-            android:id="@+id/btnAppointmentScheduling"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingVertical="16dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/appointment_scheduling_main"
-            android:textSize="16sp"
-            android:backgroundTint="@color/primary_dark"
-            app:cornerRadius="4dp"
-            android:textColor="@color/text" />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
