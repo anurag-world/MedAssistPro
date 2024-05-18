@@ -30,19 +30,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize button
         Button btnLogin = findViewById(R.id.btnLogin);
-        Button btnPatientRegister = findViewById(R.id.btnPatientRegister);
         Button btnAppointmentScheduling = findViewById(R.id.btnAppointmentScheduling);
 
         // Set click listener to redirect to Login Screen
         btnLogin.setOnClickListener(v -> {
             // Open Login Activity
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
-        });
-
-        // Set click listener to redirect to Patient Registration Screen
-        btnPatientRegister.setOnClickListener(v -> {
-            // Open Patient Registration Activity
-            startActivity(new Intent(MainActivity.this, PatientRegistrationActivity.class));
         });
 
         // Set click listener to redirect to Booking Appointment Screen

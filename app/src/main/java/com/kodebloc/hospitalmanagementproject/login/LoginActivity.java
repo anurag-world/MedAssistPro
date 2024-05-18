@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             Log.v(TAG, user.getUid());
-            Intent intent = new Intent(LoginActivity.this, AppointmentSchedulingActivity.class);
+            Intent intent = new Intent(LoginActivity.this, PatientRegistrationActivity.class);
             startActivity(intent);
             finish();
         }

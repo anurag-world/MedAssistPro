@@ -5,45 +5,39 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primary_light"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="bottom"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Button to navigate to Patient Registration Activity -->
         <Button
             android:id="@+id/btnLogin"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="12dp"
             android:layout_marginBottom="8dp"
             android:text="@string/login"
             android:textSize="18sp"
-            app:cornerRadius="4dp" />
-
-        <Button
-            android:id="@+id/btnPatientRegister"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:paddingVertical="12dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/patient_registration_main"
-            android:textSize="18sp"
-            app:cornerRadius="4dp" />
+            android:backgroundTint="@color/primary_dark"
+            android:textColor="@color/text"
+            app:cornerRadius="8dp" />
 
         <Button
             android:id="@+id/btnAppointmentScheduling"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="12dp"
             android:layout_marginBottom="8dp"
             android:text="@string/appointment_scheduling_main"
             android:textSize="18sp"
-            app:cornerRadius="4dp" />
+            android:backgroundTint="@color/primary_dark"
+            android:textColor="@color/text"
+            app:cornerRadius="8dp" />
 
     </LinearLayout>
 

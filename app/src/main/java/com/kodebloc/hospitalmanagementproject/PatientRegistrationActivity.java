@@ -1,5 +1,6 @@
 package com.kodebloc.hospitalmanagementproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,9 +15,22 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.kodebloc.hospitalmanagementproject.util.SecurityUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 public class PatientRegistrationActivity extends AppCompatActivity {
+    // Firebase instance
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+
+
+    // UI elements
     private EditText etFullName, etAge, etMedicalHistory, etInsuranceInfo, etEmergencyContact;
     private Button btnRegister;
 
@@ -30,6 +44,10 @@ public class PatientRegistrationActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Initialize Firebase instance
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         // Initialize UI elements
         etFullName = findViewById(R.id.etFullName);
@@ -109,12 +127,69 @@ public class PatientRegistrationActivity extends AppCompatActivity {
             String encryptedEmergencyContact = SecurityUtils.encryptData(emergencyContact);
 
             // Perform patient registration with encrypted data
+            addPatientData(fullName, age, encryptedMedicalHistory, encryptedInsuranceInfo, encryptedEmergencyContact);
+
             // For now, display encrypted data for testing purposes
             displayPatientInfo(fullName, age, encryptedMedicalHistory, encryptedInsuranceInfo, encryptedEmergencyContact);
+
         } catch (Exception e) {
             Log.e("RegisterPatientError", "An error occurred:", e);
             Toast.makeText(this, "Error encrypting data", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // Method to add patient data to Firestore
+    private void addPatientData(String fullName, String age, String medicalHistory, String insuranceInfo, String emergencyContact) {
+        // Get the current user's data
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (currentUser != null) {
+            //Log.d("currentUser", Objects.requireNonNull(currentUser.getEmail()));
+            // Get the user's ID and email
+            String userId = currentUser.getUid();
+            String userEmail = currentUser.getEmail();
+
+            // Create a map to store patient data
+            Map<String, Object> patientData = new HashMap<>();
+
+            // Add patient data to the map
+            patientData.put("id", userId);
+            patientData.put("email", userEmail);
+            patientData.put("fullName", fullName);
+            patientData.put("age", age);
+            patientData.put("medicalHistory", medicalHistory);
+            patientData.put("insuranceInfo", insuranceInfo);
+            patientData.put("emergencyContact", emergencyContact);
+
+            db.collection("users")
+                    .add(patientData)
+                    .addOnSuccessListener(documentReference -> {
+                        // Patient data added successfully
+                        // Display a success message
+                        Toast.makeText(this, "Patient data added successfully", Toast.LENGTH_SHORT).show();
+                        // Log the added patient data
+                        Log.d("AddPatientDataSuccess", "Patient data added with ID: " + userId);
+                        // Redirect to dashboard
+                        redirectToDashboard();
+                    })
+                    .addOnFailureListener(e -> {
+                        // Error adding patient data
+                        // Display an error message
+                        Toast.makeText(this, "Error adding patient data", Toast.LENGTH_SHORT).show();
+                        // Log the error
+                        Log.e("AddPatientDataError", "Error adding patient data", e);
+                    });
+        } else {
+            // User is not logged in
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void redirectToDashboard() {
+        // Redirect to DashboardActivity
+        Intent intent = new Intent(this, AppointmentSchedulingActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     // Method to display patient information (for testing purposes)
@@ -126,11 +201,7 @@ public class PatientRegistrationActivity extends AppCompatActivity {
                 "Insurance Information: " + insuranceInfo + "\n" +
                 "Emergency Contact: " + emergencyContact;
 
-        // For testing, display patient info in a toast
-        // Replace with appropriate UI updates or database operations
-        // Toast.makeText(this, patientInfo, Toast.LENGTH_LONG).show();
-        // For now, just print to logcat
-        Toast.makeText(this, patientInfo, Toast.LENGTH_LONG).show();
+        // Display patient information in Logcat
         System.out.println(patientInfo);
     }
 }
