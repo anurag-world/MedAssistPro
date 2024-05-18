@@ -1,4 +1,4 @@
-package com.kodebloc.hospitalmanagementproject.utility;
+package com.kodebloc.hospitalmanagementproject.util;
 
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
