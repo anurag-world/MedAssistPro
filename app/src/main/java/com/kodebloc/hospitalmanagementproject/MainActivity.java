@@ -27,12 +27,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Set up the action bar with title and back button
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle("Hospital Management Project");
-        }
-
         FirebaseApp.initializeApp(this);
 
         // Initialize button
