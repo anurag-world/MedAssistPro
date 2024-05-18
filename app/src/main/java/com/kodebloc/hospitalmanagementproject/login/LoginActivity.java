@@ -3,6 +3,8 @@ package com.kodebloc.hospitalmanagementproject.login;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -41,9 +43,26 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_login), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top + 120, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Set up the action bar with title and back button
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Login");
+            actionBar.setDisplayHomeAsUpEnabled(true); // Enable back button
+        }
+
+        // Handle the back button press
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Navigate back to the previous activity
+                finish();
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -58,6 +77,14 @@ public class LoginActivity extends AppCompatActivity {
         // Set click listeners for login and register buttons
         loginButton.setOnClickListener(v -> loginUser());
         registerButton.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, PatientRegistrationActivity.class)));
+    }
+
+    // Handle back button press
+    @Override
+    public boolean onSupportNavigateUp() {
+        // Handle the action bar's up button
+        finish();
+        return true;
     }
 
     // Check if user is already logged in
