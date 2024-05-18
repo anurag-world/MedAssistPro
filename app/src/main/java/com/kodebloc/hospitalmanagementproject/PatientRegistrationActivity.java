@@ -14,7 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.kodebloc.hospitalmanagementproject.utility.SecurityUtils;
+import com.kodebloc.hospitalmanagementproject.util.SecurityUtils;
 
 public class PatientRegistrationActivity extends AppCompatActivity {
     private EditText etFullName, etAge, etMedicalHistory, etInsuranceInfo, etEmergencyContact;
