@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HospitalManagementProject">
         <activity
+            android:name=".login.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".ElectronicHealthRecordsActivity"
             android:exported="false" />
         <activity
