@@ -16,4 +16,10 @@
     <string name="appointment_scheduling_main">Book Appointment</string>
     <string name="date_format">%1$d/%2$d/%3$d</string>
     <string name="time_format">%1$d:%2$02d %3$s</string>
+
+    <!-- Login Activity -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register_patient">Register as Patient</string>
 </resources>
