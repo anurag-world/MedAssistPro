@@ -1,7 +1,9 @@
 package com.kodebloc.hospitalmanagementproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -11,6 +13,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.kodebloc.hospitalmanagementproject.login.LoginActivity;
 import com.kodebloc.hospitalmanagementproject.model.UserCallback;
 import com.kodebloc.hospitalmanagementproject.model.UsersData;
 
@@ -19,6 +22,7 @@ import java.util.Objects;
 
 public class DashboardActivity extends AppCompatActivity {
     private TextView dashboardWelcomeText;
+    private Button btnLogout;
     private UsersData usersData;
     private String fullName;
 
@@ -44,6 +48,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         // Initialize UI elements
         dashboardWelcomeText = findViewById(R.id.dashboardWelcomeText);
+        btnLogout = findViewById(R.id.btnLogout);
 
         // Retrieve data and handle it using a callback
         usersData.getUsers(new UserCallback() {
@@ -62,6 +67,15 @@ public class DashboardActivity extends AppCompatActivity {
                     Log.e("Error", "No user data found");
                 }
             }
+        });
+
+        btnLogout.setOnClickListener(v -> {
+            usersData.logout();
+            // After signing out, redirect the user to the login activity
+            Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish(); // Close the current activity
         });
     }
 }
