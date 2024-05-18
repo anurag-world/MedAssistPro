@@ -43,7 +43,7 @@ public class PatientRegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_patient_registration);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_patient_registration), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top + 120, systemBars.right, systemBars.bottom);
             return insets;
         });
 
