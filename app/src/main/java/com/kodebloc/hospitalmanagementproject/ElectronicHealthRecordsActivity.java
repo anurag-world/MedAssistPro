@@ -3,6 +3,7 @@ package com.kodebloc.hospitalmanagementproject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,22 +21,22 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.kodebloc.hospitalmanagementproject.util.SecurityUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ElectronicHealthRecordsActivity extends AppCompatActivity {
 
+    String fullName;
     private TextView tvPatientName;
     private EditText etMedicalHistory, etDiagnoses, etMedications, etLabResults, etTreatmentPlans;
     private Button btnSave;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
-    String fullName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,14 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
         // Fetch and display patient name
         fetchPatientName();
 
+        // Initialize encryption key
+        try {
+            SecurityUtils.generateKey(); // Generate the encryption key once
+        } catch (Exception e) {
+            Log.e("GenerateEncryptionError", "An error occurred:", e);
+            Toast.makeText(this, "Error initializing encryption key", Toast.LENGTH_SHORT).show();
+        }
+
         btnSave.setOnClickListener(v -> saveEHR());
     }
 
@@ -125,34 +134,46 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
         String userId = auth.getCurrentUser().getUid();
 
         // Validate input
-        if (TextUtils.isEmpty(fullName) ||TextUtils.isEmpty(medicalHistory) || TextUtils.isEmpty(diagnoses) ||
+        if (TextUtils.isEmpty(fullName) || TextUtils.isEmpty(medicalHistory) || TextUtils.isEmpty(diagnoses) ||
                 TextUtils.isEmpty(medications) || TextUtils.isEmpty(labResults) ||
                 TextUtils.isEmpty(treatmentPlans)) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Create a map to hold EHR details
-        Map<String, Object> ehr = new HashMap<>();
-        ehr.put("patientName", fullName);
-        ehr.put("medicalHistory", medicalHistory);
-        ehr.put("diagnoses", diagnoses);
-        ehr.put("medications", medications);
-        ehr.put("labResults", labResults);
-        ehr.put("treatmentPlans", treatmentPlans);
-        ehr.put("uid", userId);
+        try {
+            // Encrypt the data
+            String encryptedMedicalHistory = SecurityUtils.encryptData(medicalHistory);
+            String encryptedDiagnoses = SecurityUtils.encryptData(diagnoses);
+            String encryptedMedications = SecurityUtils.encryptData(medications);
+            String encryptedLabResults = SecurityUtils.encryptData(labResults);
+            String encryptedTreatmentPlans = SecurityUtils.encryptData(treatmentPlans);
 
-        // Save EHR details to Firestore
-        db.collection("ehr")
-            .add(ehr)
-            .addOnSuccessListener(documentReference -> {
-                Toast.makeText(ElectronicHealthRecordsActivity.this, "EHR saved successfully", Toast.LENGTH_LONG).show();
-                // Redirect to DashboardActivity
-                redirectToDashboard();
-            })
-            .addOnFailureListener(e -> {
-                Toast.makeText(ElectronicHealthRecordsActivity.this, "Error saving EHR", Toast.LENGTH_SHORT).show();
-            });
+            // Create a map to hold EHR details
+            Map<String, Object> ehr = new HashMap<>();
+            ehr.put("patientName", fullName);
+            ehr.put("medicalHistory", encryptedMedicalHistory);
+            ehr.put("diagnoses", encryptedDiagnoses);
+            ehr.put("medications", encryptedMedications);
+            ehr.put("labResults", encryptedLabResults);
+            ehr.put("treatmentPlans", encryptedTreatmentPlans);
+            ehr.put("uid", userId);
+
+            // Save EHR details to Firestore
+            db.collection("ehr")
+                    .add(ehr)
+                    .addOnSuccessListener(documentReference -> {
+                        Toast.makeText(ElectronicHealthRecordsActivity.this, "EHR saved successfully", Toast.LENGTH_LONG).show();
+                        // Redirect to DashboardActivity
+                        redirectToDashboard();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(ElectronicHealthRecordsActivity.this, "Error saving EHR", Toast.LENGTH_SHORT).show();
+                    });
+        } catch (Exception e) {
+            Toast.makeText(this, "Error encrypting data", Toast.LENGTH_SHORT).show();
+            Log.e("SaveEHRError", "An error occurred:", e);
+        }
     }
 
     private void redirectToDashboard() {
