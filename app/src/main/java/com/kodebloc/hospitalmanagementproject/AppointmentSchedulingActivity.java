@@ -2,6 +2,7 @@ package com.kodebloc.hospitalmanagementproject;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -185,7 +186,9 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
                     .addOnSuccessListener(documentReference -> {
                         Log.d("AppointmentSchedulingActivity", "Appointment booked successfully");
                         Toast.makeText(this, "Appointment booked successfully", Toast.LENGTH_SHORT).show();
-                        // TODO: Add redirect to view all appointments activity
+
+                        // Redirect to View All Appointments Activity
+                        redirectToAllAppointments();
                     })
                     .addOnFailureListener(e -> {
                         Log.e("AppointmentSchedulingActivity", "Error booking appointment", e);
@@ -202,6 +205,13 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
                 "With: " + doctor + "\n" +
                 "On: " + appointmentDate + " at " + appointmentTime;
         System.out.println(appointmentInfo);
+    }
+
+    private void redirectToAllAppointments() {
+        // Redirect to View All Appointments Activity
+        Intent intent = new Intent(this, ViewAllAppointmentsActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }
