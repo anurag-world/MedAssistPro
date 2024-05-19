@@ -185,6 +185,7 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
                     .addOnSuccessListener(documentReference -> {
                         Log.d("AppointmentSchedulingActivity", "Appointment booked successfully");
                         Toast.makeText(this, "Appointment booked successfully", Toast.LENGTH_SHORT).show();
+                        // TODO: Add redirect to view all appointments activity
                     })
                     .addOnFailureListener(e -> {
                         Log.e("AppointmentSchedulingActivity", "Error booking appointment", e);
