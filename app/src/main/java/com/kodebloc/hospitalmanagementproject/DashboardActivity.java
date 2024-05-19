@@ -25,6 +25,7 @@ public class DashboardActivity extends AppCompatActivity {
     private Button btnLogout;
     private Button btnAppointmentScheduling;
     private Button btnViewAllAppointments;
+    private Button btnEHR;
     private UsersData usersData;
     private String fullName;
 
@@ -53,6 +54,7 @@ public class DashboardActivity extends AppCompatActivity {
         btnAppointmentScheduling = findViewById(R.id.btnAppointmentScheduling);
         btnViewAllAppointments = findViewById(R.id.btnViewAllAppointments);
         btnLogout = findViewById(R.id.btnLogout);
+        btnEHR = findViewById(R.id.btnEHR);
 
         // Retrieve data and handle it using a callback
         usersData.getUsers(new UserCallback() {
@@ -72,6 +74,13 @@ public class DashboardActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Set click listener to redirect to EHR Screen
+        btnEHR.setOnClickListener(v -> {
+            // Open EHR Activity
+            Intent intent = new Intent(DashboardActivity.this, ElectronicHealthRecordsActivity.class);
+            startActivity(intent);
+            });
 
         // Set click listener to redirect to Booking Appointment Screen
         btnAppointmentScheduling.setOnClickListener(v -> {

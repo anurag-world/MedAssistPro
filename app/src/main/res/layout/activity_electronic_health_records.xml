@@ -7,4 +7,80 @@
     android:layout_height="match_parent"
     tools:context=".ElectronicHealthRecordsActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/electronic_health_records"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:paddingBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/tvPatientName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Patient Name"
+                android:textSize="18sp"
+                android:paddingBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etMedicalHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Medical History"
+                android:autofillHints="autofillHintsHistory"
+                android:inputType="textMultiLine"/>
+
+            <EditText
+                android:id="@+id/etDiagnoses"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Diagnoses"
+                android:autofillHints="autofillHintsDiagnoses"
+                android:inputType="text"/>
+
+            <EditText
+                android:id="@+id/etMedications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Medications"
+                android:autofillHints="autofillHintsMedications"
+                android:inputType="text"/>
+
+            <EditText
+                android:id="@+id/etLabResults"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Lab Results"
+                android:autofillHints="autofillHintsLabResults"
+                android:inputType="text"/>
+
+            <EditText
+                android:id="@+id/etTreatmentPlans"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Treatment Plans"
+                android:autofillHints="autofillHintsTreatmentPlans"
+                android:inputType="textMultiLine"/>
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:text="Save"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,6 +42,14 @@
             android:text="@string/dash_profile_btn" />
 
         <Button
+            android:id="@+id/btnEHR"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:backgroundTint="@color/primary_dark"
+            android:textColor="@color/text"
+            android:text="@string/ehr" />
+
+        <Button
             android:id="@+id/btnAppointmentScheduling"
             android:layout_width="match_parent"
             android:layout_height="64dp"

@@ -36,4 +36,8 @@
     <!-- View All Appointments Activity -->
     <string name="upcoming_appointments">Upcoming Appointments</string>
     <string name="delete_appointment">Delete Appointment</string>
+
+    <!-- Electronic Health Records Activity -->
+    <string name="ehr">Electronic Health Records (EHR)</string>
+    <string name="electronic_health_records">Electronic Health Records</string>
 </resources>
