@@ -1,5 +1,9 @@
 package com.kodebloc.hospitalmanagementproject.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Appointment {
     private String id;
     private String patientName;
@@ -67,5 +71,15 @@ public class Appointment {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public Date getAppointmentDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        try {
+            return sdf.parse(appointmentDate + " " + appointmentTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -1,20 +1,20 @@
 package com.kodebloc.hospitalmanagementproject;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import android.util.Log;
-import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +25,8 @@ import com.kodebloc.hospitalmanagementproject.adapters.AppointmentsAdapter;
 import com.kodebloc.hospitalmanagementproject.model.Appointment;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -104,6 +106,15 @@ public class ViewAllAppointmentsActivity extends AppCompatActivity {
                                 appointment.setId(document.getId()); // Set the document ID
                                 appointmentList.add(appointment);
                             }
+
+                            // Sort the list by appointment date and time
+                            Collections.sort(appointmentList, new Comparator<Appointment>() {
+                                @Override
+                                public int compare(Appointment a1, Appointment a2) {
+                                    return a1.getAppointmentDateTime().compareTo(a2.getAppointmentDateTime());
+                                }
+                            });
+                            // Notify the adapter that the data has changed
                             adapter.notifyDataSetChanged();
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
