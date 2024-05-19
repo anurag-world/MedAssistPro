@@ -40,7 +40,7 @@ public class UsersData {
         if (currentUser != null) {
             String uid = currentUser.getUid();
             db.collection("users")
-                    .whereEqualTo("id", uid)
+                    .whereEqualTo("uid", uid)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override

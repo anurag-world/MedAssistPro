@@ -84,8 +84,7 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
                     Log.d("TAG", "User Data: " + userData);
                     // Example: Get full name
                     fullName = Objects.requireNonNull(userData.get("fullName")).toString();
-                    // TODO: change id to uid
-                    uid = Objects.requireNonNull(userData.get("id")).toString();
+                    uid = Objects.requireNonNull(userData.get("uid")).toString();
 
                     // Set the patient name in the UI
                     String getName = getString(R.string.booking_patient_name, fullName);
@@ -174,7 +173,7 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
             Map<String, Object> appointmentData = new HashMap<>();
 
             // Add appointment details to the map
-            appointmentData.put("userId", uid);
+            appointmentData.put("uid", uid);
             appointmentData.put("patientName", fullName);
             appointmentData.put("doctor", doctor);
             appointmentData.put("appointmentDate", appointmentDate);
