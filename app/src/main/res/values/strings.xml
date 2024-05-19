@@ -32,4 +32,8 @@
     <string name="welcome_text">Welcome, %1$s</string>
     <string name="dash_profile_btn">Profile</string>
     <string name="view_all_appointments_btn">View All Appointments</string>
+
+    <!-- View All Appointments Activity -->
+    <string name="upcoming_appointments">Upcoming Appointments</string>
+    <string name="delete_appointment">Delete Appointment</string>
 </resources>
