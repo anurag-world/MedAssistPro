@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBar;
@@ -13,6 +14,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.kodebloc.hospitalmanagementproject.login.LoginActivity;
 import com.kodebloc.hospitalmanagementproject.model.UserCallback;
 import com.kodebloc.hospitalmanagementproject.model.UsersData;
@@ -75,12 +78,10 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        // Set click listener to redirect to EHR Screen
+        // Set click listener to check EHR and redirect
         btnEHR.setOnClickListener(v -> {
-            // Open EHR Activity
-            Intent intent = new Intent(DashboardActivity.this, ElectronicHealthRecordsActivity.class);
-            startActivity(intent);
-            });
+            checkEHRAndRedirect();
+        });
 
         // Set click listener to redirect to Booking Appointment Screen
         btnAppointmentScheduling.setOnClickListener(v -> {
@@ -105,5 +106,25 @@ public class DashboardActivity extends AppCompatActivity {
             startActivity(intent);
             finish(); // Close the current activity
         });
+    }
+
+    private void checkEHRAndRedirect() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("ehr").whereEqualTo("uid", userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty()) {
+                            Toast.makeText(DashboardActivity.this, "Health records already exist", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Intent intent = new Intent(DashboardActivity.this, ElectronicHealthRecordsActivity.class);
+                            startActivity(intent);
+                        }
+                    } else {
+                        Log.e("Error", "Error checking EHR", task.getException());
+                        Toast.makeText(DashboardActivity.this, "Error checking EHR", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
