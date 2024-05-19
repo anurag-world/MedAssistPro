@@ -180,7 +180,7 @@ public class PatientRegistrationActivity extends AppCompatActivity {
             Map<String, Object> patientData = new HashMap<>();
 
             // Add patient data to the map
-            patientData.put("id", userId);
+            patientData.put("uid", userId);
             patientData.put("email", userEmail);
             patientData.put("fullName", fullName);
             patientData.put("age", age);
@@ -214,7 +214,7 @@ public class PatientRegistrationActivity extends AppCompatActivity {
 
     private void redirectToDashboard() {
         // Redirect to DashboardActivity
-        Intent intent = new Intent(this, AppointmentSchedulingActivity.class);
+        Intent intent = new Intent(this, DashboardActivity.class);
         startActivity(intent);
         finish();
     }

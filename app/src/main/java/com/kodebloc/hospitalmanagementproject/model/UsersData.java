@@ -29,6 +29,10 @@ public class UsersData {
         return db;
     }
 
+    public void logout() {
+        mAuth.signOut();
+    }
+
     public void getUsers(UserCallback callback) {
         // Get the authenticated user
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -36,7 +40,7 @@ public class UsersData {
         if (currentUser != null) {
             String uid = currentUser.getUid();
             db.collection("users")
-                    .whereEqualTo("id", uid)
+                    .whereEqualTo("uid", uid)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override

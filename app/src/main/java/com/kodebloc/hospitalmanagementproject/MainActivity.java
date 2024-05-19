@@ -12,9 +12,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.kodebloc.hospitalmanagementproject.login.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,22 +31,27 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Initialize Firebase
         FirebaseApp.initializeApp(this);
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        // Check if user is already logged in
+        if (currentUser != null) {
+            // User is already logged in, redirect to Home Screen
+            startActivity(new Intent(MainActivity.this, DashboardActivity.class));
+            finish();
+        }
 
         // Initialize button
         Button btnLogin = findViewById(R.id.btnLogin);
-        Button btnAppointmentScheduling = findViewById(R.id.btnAppointmentScheduling);
 
         // Set click listener to redirect to Login Screen
         btnLogin.setOnClickListener(v -> {
             // Open Login Activity
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
-        });
-
-        // Set click listener to redirect to Booking Appointment Screen
-        btnAppointmentScheduling.setOnClickListener(v -> {
-            // Open Appointment Scheduling Activity
-            startActivity(new Intent(MainActivity.this, AppointmentSchedulingActivity.class));
         });
     }
 }
