@@ -75,7 +75,7 @@ public class ViewAllAppointmentsActivity extends AppCompatActivity {
 
         // Initialize the appointment list and adapter
         appointmentList = new ArrayList<>();
-        adapter = new AppointmentsAdapter(appointmentList);
+        adapter = new AppointmentsAdapter(this, appointmentList);
         recyclerViewAppointments.setAdapter(adapter);
 
         // Fetch appointments for the current user
@@ -101,6 +101,7 @@ public class ViewAllAppointmentsActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Appointment appointment = document.toObject(Appointment.class);
+                                appointment.setId(document.getId()); // Set the document ID
                                 appointmentList.add(appointment);
                             }
                             adapter.notifyDataSetChanged();

@@ -34,5 +34,6 @@
     <string name="view_all_appointments_btn">View All Appointments</string>
 
     <!-- View All Appointments Activity -->
-    <string name="all_appointments">All Appointments</string>
+    <string name="upcoming_appointments">Upcoming Appointments</string>
+    <string name="delete_appointment">Delete Appointment</string>
 </resources>
