@@ -10,6 +10,7 @@
     <string name="patient_registration_main">Patient Registration</string>
     <string name="date_format">%1$d/%2$d/%3$d</string>
     <string name="time_format">%1$d:%2$02d %3$s</string>
+    <string name="save">Save</string>
 
     <!-- Login Activity -->
     <string name="email">Email</string>
@@ -36,4 +37,8 @@
     <!-- View All Appointments Activity -->
     <string name="upcoming_appointments">Upcoming Appointments</string>
     <string name="delete_appointment">Delete Appointment</string>
+
+    <!-- Electronic Health Records Activity -->
+    <string name="ehr">Electronic Health Records (EHR)</string>
+    <string name="electronic_health_records">Electronic Health Records</string>
 </resources>
