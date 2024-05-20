@@ -10,7 +10,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.kodebloc.hospitalmanagementproject.AppointmentSchedulingActivity;
 import com.kodebloc.hospitalmanagementproject.DashboardActivity;
 import com.kodebloc.hospitalmanagementproject.PatientRegistrationActivity;
 import com.kodebloc.hospitalmanagementproject.R;
@@ -25,12 +24,14 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
     // Declare variables
     private static final String TAG = "LoginActivity";
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button loginButton;
@@ -65,8 +66,10 @@ public class LoginActivity extends AppCompatActivity {
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
 
-        // Initialize Firebase Auth
+        // Initialize Firebase Auth and Firestore
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
 
         // Initialize views
         emailEditText = findViewById(R.id.emailEditText);
@@ -125,12 +128,29 @@ public class LoginActivity extends AppCompatActivity {
     // Update UI based on user status
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            Log.v(TAG, user.getUid());
-            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-            startActivity(intent);
-            finish();
-        }
-        else {
+            String uid = user.getUid();
+            Log.v(TAG, uid);
+
+            // Check if user data exists in Firestore
+            db.collection("users").document(uid).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            // User data exists, redirect to Dashboard
+                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            // User data does not exist, redirect to Patient Registration
+                            Intent intent = new Intent(LoginActivity.this, PatientRegistrationActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error checking user data", e);
+                        Toast.makeText(LoginActivity.this, "Error checking user data", Toast.LENGTH_SHORT).show();
+                    });
+        } else {
             Log.v(TAG, "User is null");
         }
     }
