@@ -130,7 +130,7 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 (view, year1, monthOfYear, dayOfMonth) -> {
-                    String dateString = getString(R.string.date_format, day, month + 1, year);
+                    String dateString = getString(R.string.date_format, dayOfMonth, monthOfYear + 1, year1);
                     etAppointmentDate.setText(dateString);
                 }, year, month, day);
         datePickerDialog.show();
