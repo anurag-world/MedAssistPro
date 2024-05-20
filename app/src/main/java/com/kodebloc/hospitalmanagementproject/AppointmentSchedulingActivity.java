@@ -97,7 +97,7 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
         });
 
         // Set up spinner with doctors/specialists/departments
-        String[] doctors = {"Dr. Smith - Cardiology", "Dr. Jones - Neurology", "Dr. Brown - Orthopedics"};
+        String[] doctors = {"Dr. Patel - Cardiology", "Dr. Rao - Neurology", "Dr. Mehta - Orthopedics", "Dr. Sharma - Dermatology", "Dr. Verma - Pediatrics", "Dr. Iyer - Gastroenterology"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, doctors);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDoctor.setAdapter(adapter);
