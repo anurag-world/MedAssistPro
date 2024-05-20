@@ -41,4 +41,7 @@
     <!-- Electronic Health Records Activity -->
     <string name="ehr">Electronic Health Records (EHR)</string>
     <string name="electronic_health_records">Electronic Health Records</string>
+
+    <!-- Profile Activity -->
+    <string name="profile">Profile</string>
 </resources>

@@ -189,7 +189,8 @@ public class PatientRegistrationActivity extends AppCompatActivity {
             patientData.put("emergencyContact", emergencyContact);
 
             db.collection("users")
-                    .add(patientData)
+                    .document(userId)
+                    .set(patientData)
                     .addOnSuccessListener(documentReference -> {
                         // Patient data added successfully
                         // Display a success message
