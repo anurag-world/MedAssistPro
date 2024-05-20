@@ -19,16 +19,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.kodebloc.hospitalmanagementproject.login.LoginActivity;
 import com.kodebloc.hospitalmanagementproject.model.UserCallback;
 import com.kodebloc.hospitalmanagementproject.model.UsersData;
+import com.kodebloc.hospitalmanagementproject.profile.ProfileActivity;
 
 import java.util.Map;
 import java.util.Objects;
 
 public class DashboardActivity extends AppCompatActivity {
     private TextView dashboardWelcomeText;
-    private Button btnLogout;
+    private Button btnProfile;
+    private Button btnEHR;
     private Button btnAppointmentScheduling;
     private Button btnViewAllAppointments;
-    private Button btnEHR;
+    private Button btnLogout;
     private UsersData usersData;
     private String fullName;
 
@@ -58,6 +60,7 @@ public class DashboardActivity extends AppCompatActivity {
         btnViewAllAppointments = findViewById(R.id.btnViewAllAppointments);
         btnLogout = findViewById(R.id.btnLogout);
         btnEHR = findViewById(R.id.btnEHR);
+        btnProfile = findViewById(R.id.btnProfile);
 
         // Retrieve data and handle it using a callback
         usersData.getUsers(new UserCallback() {
@@ -76,6 +79,13 @@ public class DashboardActivity extends AppCompatActivity {
                     Log.e("Error", "No user data found");
                 }
             }
+        });
+
+        // Set click listener to redirect to Profile Screen
+        btnProfile.setOnClickListener(v -> {
+            // Open Profile Activity
+            Intent intent = new Intent(DashboardActivity.this, ProfileActivity.class);
+            startActivity(intent);
         });
 
         // Set click listener to check EHR and redirect

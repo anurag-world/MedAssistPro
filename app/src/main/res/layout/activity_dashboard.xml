@@ -35,6 +35,7 @@
             android:layout_marginBottom="16dp" />
 
         <Button
+            android:id="@+id/btnProfile"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:backgroundTint="@color/primary_dark"
