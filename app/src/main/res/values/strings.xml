@@ -44,4 +44,7 @@
 
     <!-- Profile Activity -->
     <string name="profile">Profile</string>
+
+    <!-- Billing Activity -->
+    <string name="billing">Billing</string>
 </resources>

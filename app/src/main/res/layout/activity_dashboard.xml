@@ -67,6 +67,14 @@
             android:text="@string/view_all_appointments_btn" />
 
         <Button
+            android:id="@+id/btnBilling"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:backgroundTint="@color/primary_dark"
+            android:textColor="@color/text"
+            android:text="@string/billing" />
+
+        <Button
             android:id="@+id/btnLogout"
             android:layout_width="match_parent"
             android:layout_height="64dp"
