@@ -107,12 +107,12 @@ public class BillingActivity extends AppCompatActivity {
     }
 
     private void updateBillingInfo(String fullName) {
-        String billingInfo = "Billing Information\n\n" +
-                "Patient Name: " + fullName + "\n" +
+        String billingInfo = "Billing Information:\n\n" +
+                "Patient Name: " + fullName + "\n\n" +
                 "Doctor Fees: ₹15,000\n" +
                 "Lab Tests: ₹11,250\n" +
                 "Medications: ₹3,750\n" +
-                "Room Charges: ₹22,500\n";
+                "Room Charges: ₹22,500";
 
         tvBillingInfo.setText(billingInfo);
     }
