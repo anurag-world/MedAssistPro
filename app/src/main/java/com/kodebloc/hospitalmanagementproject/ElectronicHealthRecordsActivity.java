@@ -11,32 +11,30 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.kodebloc.hospitalmanagementproject.util.SecurityUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ElectronicHealthRecordsActivity extends AppCompatActivity {
-
+    private static final String TAG = "ElectronicHealthRecordsActivity";
     String fullName;
     private TextView tvPatientName;
     private EditText etMedicalHistory, etDiagnoses, etMedications, etLabResults, etTreatmentPlans;
     private Button btnSave;
+    private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private FirebaseAuth auth;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +65,8 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, callback);
 
         // Initialize Firestore and Auth
+        mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
 
         // Initialize UI elements
         tvPatientName = findViewById(R.id.tvPatientName);
@@ -79,8 +77,14 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
         etTreatmentPlans = findViewById(R.id.etTreatmentPlans);
         btnSave = findViewById(R.id.btnSave);
 
-        // Fetch and display patient name
-        fetchPatientName();
+        // Get current user
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            userId = currentUser.getUid();
+            fetchPatientName(userId);
+        } else {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+        }
 
         // Initialize encryption key
         try {
@@ -101,28 +105,23 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
         return true;
     }
 
-    private void fetchPatientName() {
-        String userId = auth.getCurrentUser().getUid();
-        db.collection("users")
-                .whereEqualTo("uid", userId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (document.exists()) {
-                                    fullName = document.getString("fullName");
-                                    tvPatientName.setText(fullName);
-                                } else {
-                                    Toast.makeText(ElectronicHealthRecordsActivity.this, "No such user", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } else {
-                            Toast.makeText(ElectronicHealthRecordsActivity.this, "Error getting user data", Toast.LENGTH_SHORT).show();
-                        }
+    private void fetchPatientName(String userId) {
+        db.collection("users").document(userId).get()
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        fullName = document.getString("fullName");
+                        tvPatientName.setText(fullName);
+                    } else {
+                        Log.d(TAG, "No such document");
+                        Toast.makeText(ElectronicHealthRecordsActivity.this, "No user data found", Toast.LENGTH_SHORT).show();
                     }
-                });
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                    Toast.makeText(ElectronicHealthRecordsActivity.this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
     private void saveEHR() {
@@ -131,7 +130,6 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
         String medications = etMedications.getText().toString().trim();
         String labResults = etLabResults.getText().toString().trim();
         String treatmentPlans = etTreatmentPlans.getText().toString().trim();
-        String userId = auth.getCurrentUser().getUid();
 
         // Validate input
         if (TextUtils.isEmpty(fullName) || TextUtils.isEmpty(medicalHistory) || TextUtils.isEmpty(diagnoses) ||
@@ -168,6 +166,7 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
                         redirectToDashboard();
                     })
                     .addOnFailureListener(e -> {
+                        // Handle failure
                         Toast.makeText(ElectronicHealthRecordsActivity.this, "Error saving EHR", Toast.LENGTH_SHORT).show();
                     });
         } catch (Exception e) {

@@ -120,24 +120,24 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void fetchUserName(String userId) {
         db.collection("users").document(userId).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            fullName = document.getString("fullName");
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        fullName = document.getString("fullName");
 
-                            // Update UI with full name
-                            String welcomeText = getString(R.string.welcome_text, fullName);
-                            dashboardWelcomeText.setText(welcomeText);
-                        } else {
-                            Log.d(TAG, "No such document");
-                            Toast.makeText(DashboardActivity.this, "No user data found", Toast.LENGTH_SHORT).show();
-                        }
+                        // Update UI with full name
+                        String welcomeText = getString(R.string.welcome_text, fullName);
+                        dashboardWelcomeText.setText(welcomeText);
                     } else {
-                        Log.d(TAG, "get failed with ", task.getException());
-                        Toast.makeText(DashboardActivity.this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "No such document");
+                        Toast.makeText(DashboardActivity.this, "No user data found", Toast.LENGTH_SHORT).show();
                     }
-                });
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                    Toast.makeText(DashboardActivity.this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
     private void checkEHRAndRedirect() {
