@@ -33,7 +33,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button loginButton;
-    private Button registerButton;
     private ProgressBar progressBar;
 
     @Override
@@ -73,12 +72,10 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
-        registerButton = findViewById(R.id.registerButton);
         progressBar = findViewById(R.id.progressBar);
 
         // Set click listeners for login and register buttons
         loginButton.setOnClickListener(v -> loginUser());
-        registerButton.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, PatientRegistrationActivity.class)));
     }
 
     // Handle back button press
@@ -132,7 +129,6 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // New user registered, redirect to patient registration
                         Log.d(TAG, "createUserWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
                         Intent intent = new Intent(LoginActivity.this, PatientRegistrationActivity.class);
                         startActivity(intent);
                         finish();
