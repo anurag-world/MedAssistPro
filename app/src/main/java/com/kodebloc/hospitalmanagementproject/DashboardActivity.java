@@ -30,6 +30,7 @@ public class DashboardActivity extends AppCompatActivity {
     private Button btnEHR;
     private Button btnAppointmentScheduling;
     private Button btnViewAllAppointments;
+    private Button btnBilling;
     private Button btnLogout;
     private UsersData usersData;
     private String fullName;
@@ -56,11 +57,12 @@ public class DashboardActivity extends AppCompatActivity {
 
         // Initialize UI elements
         dashboardWelcomeText = findViewById(R.id.dashboardWelcomeText);
+        btnProfile = findViewById(R.id.btnProfile);
+        btnEHR = findViewById(R.id.btnEHR);
         btnAppointmentScheduling = findViewById(R.id.btnAppointmentScheduling);
         btnViewAllAppointments = findViewById(R.id.btnViewAllAppointments);
+        btnBilling = findViewById(R.id.btnBilling);
         btnLogout = findViewById(R.id.btnLogout);
-        btnEHR = findViewById(R.id.btnEHR);
-        btnProfile = findViewById(R.id.btnProfile);
 
         // Retrieve data and handle it using a callback
         usersData.getUsers(new UserCallback() {
@@ -104,6 +106,13 @@ public class DashboardActivity extends AppCompatActivity {
         btnViewAllAppointments.setOnClickListener(v -> {
             // Open View All Appointments Activity
             Intent intent = new Intent(DashboardActivity.this, ViewAllAppointmentsActivity.class);
+            startActivity(intent);
+        });
+
+        // Set click listener to redirect to Billing Screen
+        btnBilling.setOnClickListener(v -> {
+            // Open Billing Activity
+            Intent intent = new Intent(DashboardActivity.this, BillingActivity.class);
             startActivity(intent);
         });
 

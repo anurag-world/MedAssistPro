@@ -119,6 +119,7 @@ public class PatientRegistrationActivity extends AppCompatActivity {
         return true;
     }
 
+    // Method to hide the keyboard
     private void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
