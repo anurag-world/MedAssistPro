@@ -24,7 +24,6 @@ import com.kodebloc.hospitalmanagementproject.util.SecurityUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class PatientRegistrationActivity extends AppCompatActivity {
     // Firebase instance
@@ -33,7 +32,7 @@ public class PatientRegistrationActivity extends AppCompatActivity {
 
 
     // UI elements
-    private EditText etFullName, etAge, etMedicalHistory, etInsuranceInfo, etEmergencyContact;
+    private EditText etFullName, etAge, etInsuranceInfo, etEmergencyContact;
     private Button btnRegister;
 
     @Override
@@ -71,7 +70,6 @@ public class PatientRegistrationActivity extends AppCompatActivity {
         // Initialize UI elements
         etFullName = findViewById(R.id.etFullName);
         etAge = findViewById(R.id.etAge);
-        etMedicalHistory = findViewById(R.id.etMedicalHistory);
         etInsuranceInfo = findViewById(R.id.etInsuranceInfo);
         etEmergencyContact = findViewById(R.id.etEmergencyContact);
         btnRegister = findViewById(R.id.btnRegister);
@@ -105,13 +103,12 @@ public class PatientRegistrationActivity extends AppCompatActivity {
     private boolean validateInput() {
         String fullName = etFullName.getText().toString().trim();
         String age = etAge.getText().toString().trim();
-        String medicalHistory = etMedicalHistory.getText().toString().trim();
         String insuranceInfo = etInsuranceInfo.getText().toString().trim();
         String emergencyContact = etEmergencyContact.getText().toString().trim();
 
         // Check if any required field is empty
         if (TextUtils.isEmpty(fullName) || TextUtils.isEmpty(age) ||
-                TextUtils.isEmpty(medicalHistory) || TextUtils.isEmpty(insuranceInfo) ||
+                TextUtils.isEmpty(insuranceInfo) ||
                 TextUtils.isEmpty(emergencyContact)) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return false;
@@ -143,21 +140,19 @@ public class PatientRegistrationActivity extends AppCompatActivity {
         // Get user input
         String fullName = etFullName.getText().toString().trim();
         String age = etAge.getText().toString().trim();
-        String medicalHistory = etMedicalHistory.getText().toString().trim();
         String insuranceInfo = etInsuranceInfo.getText().toString().trim();
         String emergencyContact = etEmergencyContact.getText().toString().trim();
 
         try {
             // Encrypt sensitive data
-            String encryptedMedicalHistory = SecurityUtils.encryptData(medicalHistory);
             String encryptedInsuranceInfo = SecurityUtils.encryptData(insuranceInfo);
             String encryptedEmergencyContact = SecurityUtils.encryptData(emergencyContact);
 
             // Perform patient registration with encrypted data
-            addPatientData(fullName, age, encryptedMedicalHistory, encryptedInsuranceInfo, encryptedEmergencyContact);
+            addPatientData(fullName, age, encryptedInsuranceInfo, encryptedEmergencyContact);
 
             // For now, display encrypted data for testing purposes
-            displayPatientInfo(fullName, age, encryptedMedicalHistory, encryptedInsuranceInfo, encryptedEmergencyContact);
+            displayPatientInfo(fullName, age, encryptedInsuranceInfo, encryptedEmergencyContact);
 
         } catch (Exception e) {
             Log.e("RegisterPatientError", "An error occurred:", e);
@@ -166,7 +161,7 @@ public class PatientRegistrationActivity extends AppCompatActivity {
     }
 
     // Method to add patient data to Firestore
-    private void addPatientData(String fullName, String age, String medicalHistory, String insuranceInfo, String emergencyContact) {
+    private void addPatientData(String fullName, String age, String insuranceInfo, String emergencyContact) {
         // Get the current user's data
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
@@ -184,7 +179,6 @@ public class PatientRegistrationActivity extends AppCompatActivity {
             patientData.put("email", userEmail);
             patientData.put("fullName", fullName);
             patientData.put("age", age);
-            patientData.put("medicalHistory", medicalHistory);
             patientData.put("insuranceInfo", insuranceInfo);
             patientData.put("emergencyContact", emergencyContact);
 
@@ -221,11 +215,9 @@ public class PatientRegistrationActivity extends AppCompatActivity {
     }
 
     // Method to display patient information (for testing purposes)
-    private void displayPatientInfo(String fullName, String age, String medicalHistory,
-                                    String insuranceInfo, String emergencyContact) {
+    private void displayPatientInfo(String fullName, String age, String insuranceInfo, String emergencyContact) {
         String patientInfo = "Full Name: " + fullName + "\n" +
                 "Age: " + age + "\n" +
-                "Medical History: " + medicalHistory + "\n" +
                 "Insurance Information: " + insuranceInfo + "\n" +
                 "Emergency Contact: " + emergencyContact;
 

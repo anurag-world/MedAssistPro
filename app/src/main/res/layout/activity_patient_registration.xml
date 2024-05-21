@@ -44,15 +44,6 @@
         android:autofillHints="age"/>
 
     <EditText
-        android:id="@+id/etMedicalHistory"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginBottom="16dp"
-        android:hint="@string/medical_history"
-        android:inputType="textMultiLine"
-        android:autofillHints="text" />
-
-    <EditText
         android:id="@+id/etInsuranceInfo"
         android:layout_width="match_parent"
         android:layout_height="48dp"
