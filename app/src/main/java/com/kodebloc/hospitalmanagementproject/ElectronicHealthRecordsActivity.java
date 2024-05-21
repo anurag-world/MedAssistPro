@@ -1,9 +1,13 @@
 package com.kodebloc.hospitalmanagementproject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -95,6 +99,22 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
         }
 
         btnSave.setOnClickListener(v -> saveEHR());
+
+        // Set up touch listener to hide the keyboard when touching outside the input fields
+        View rootLayout = findViewById(R.id.ehr_root_layout);
+        rootLayout.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                hideKeyboard();
+                v.performClick();
+                return true;
+            }
+            return false;
+        });
+
+        // Ensure the root view handles click event for accessibility
+        rootLayout.setOnClickListener(v -> {
+            // Handle click event
+        });
     }
 
     // Handle back button press
@@ -103,6 +123,15 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
         // Handle the action bar's up button
         finish();
         return true;
+    }
+
+    // Method to hide the keyboard
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     private void fetchPatientName(String userId) {
