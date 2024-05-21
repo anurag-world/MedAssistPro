@@ -1,8 +1,10 @@
 package com.kodebloc.hospitalmanagementproject;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
@@ -12,9 +14,18 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class BillingActivity extends AppCompatActivity {
+    private static final String TAG = "BillingActivity";
     private TextView tvBillingInfo;
     private Button btnPayNow;
+
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,23 +55,22 @@ public class BillingActivity extends AppCompatActivity {
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
 
+        // Initialize Firebase instances
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
         // Initialize UI elements
         tvBillingInfo = findViewById(R.id.tvBillingInfo);
         btnPayNow = findViewById(R.id.btnPayNow);
 
-        // Set the billing information
-        String billingInfo = "Invoice for Services Rendered:\n\n" +
-                "Patient Name: John Doe\n" +
-                "Service Date: 2024-05-01\n\n" +
-                "Services:\n" +
-                "1. Consultation with Dr. Smith - Cardiology: $150\n" +
-                "2. X-Ray: $100\n" +
-                "3. Blood Test: $50\n\n" +
-                "Total Amount: $300\n" +
-                "Insurance Coverage: $200\n\n" +
-                "Outstanding Bill Amount: $100";
-
-        tvBillingInfo.setText(billingInfo);
+        // Get current user
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            fetchPatientName(userId);
+        } else {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+        }
 
         // Set click listener for the pay now button
         btnPayNow.setOnClickListener(v -> {
@@ -75,6 +85,36 @@ public class BillingActivity extends AppCompatActivity {
         // Handle the action bar's up button
         finish();
         return true;
+    }
+
+    private void fetchPatientName(String userId) {
+        db.collection("users").document(userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String fullName = document.getString("fullName");
+                            updateBillingInfo(fullName);
+                        } else {
+                            Log.d(TAG, "No such document");
+                            Toast.makeText(BillingActivity.this, "No user data found", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                        Toast.makeText(BillingActivity.this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void updateBillingInfo(String fullName) {
+        String billingInfo = "Billing Information\n\n" +
+                "Patient Name: " + fullName + "\n" +
+                "Doctor Fees: ₹15,000\n" +
+                "Lab Tests: ₹11,250\n" +
+                "Medications: ₹3,750\n" +
+                "Room Charges: ₹22,500\n";
+
+        tvBillingInfo.setText(billingInfo);
     }
 
     private void initiatePayment() {
