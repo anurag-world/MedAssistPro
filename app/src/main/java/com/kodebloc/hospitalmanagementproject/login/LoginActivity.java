@@ -1,6 +1,13 @@
 package com.kodebloc.hospitalmanagementproject.login;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
@@ -10,21 +17,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.kodebloc.hospitalmanagementproject.DashboardActivity;
-import com.kodebloc.hospitalmanagementproject.PatientRegistrationActivity;
-import com.kodebloc.hospitalmanagementproject.R;
-
-import android.content.Intent;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.kodebloc.hospitalmanagementproject.DashboardActivity;
+import com.kodebloc.hospitalmanagementproject.PatientRegistrationActivity;
+import com.kodebloc.hospitalmanagementproject.R;
 
 public class LoginActivity extends AppCompatActivity {
     // Declare variables
@@ -35,7 +33,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button loginButton;
-    private Button registerButton;
     private ProgressBar progressBar;
 
     @Override
@@ -75,12 +72,10 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
-        registerButton = findViewById(R.id.registerButton);
         progressBar = findViewById(R.id.progressBar);
 
         // Set click listeners for login and register buttons
         loginButton.setOnClickListener(v -> loginUser());
-        registerButton.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, PatientRegistrationActivity.class)));
     }
 
     // Handle back button press
@@ -117,10 +112,30 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         updateUI(user);
                     } else {
-                        // Sign in failed, display error message
+                        // User does not exist, register new user
                         Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
-                        updateUI(null);
+                        registerNewUser(email, password);
+                    }
+                });
+    }
+
+    // Register new user
+    private void registerNewUser(String email, String password) {
+        progressBar.setVisibility(View.VISIBLE);
+
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    progressBar.setVisibility(View.GONE);
+                    if (task.isSuccessful()) {
+                        // New user registered, redirect to patient registration
+                        Log.d(TAG, "createUserWithEmail:success");
+                        Intent intent = new Intent(LoginActivity.this, PatientRegistrationActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        // Registration failed, display error message
+                        Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                        Toast.makeText(LoginActivity.this, "Registration Failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
