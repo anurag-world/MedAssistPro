@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AppointmentSchedulingActivity extends AppCompatActivity {
-    private static final String TAG = "BillingActivity";
+    private static final String TAG = "AppointmentSchedulingActivity";
     private TextView patientNameUI;
     private EditText etAppointmentDate, etAppointmentTime;
     private Spinner spinnerDoctor;
