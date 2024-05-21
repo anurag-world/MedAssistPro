@@ -87,6 +87,7 @@ public class BillingActivity extends AppCompatActivity {
         return true;
     }
 
+    // Fetch patient name from Firestore
     private void fetchPatientName(String userId) {
         db.collection("users").document(userId).get()
                 .addOnCompleteListener(task -> {
