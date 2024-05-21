@@ -15,16 +15,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.kodebloc.hospitalmanagementproject.login.LoginActivity;
-import com.kodebloc.hospitalmanagementproject.model.UserCallback;
-import com.kodebloc.hospitalmanagementproject.model.UsersData;
 import com.kodebloc.hospitalmanagementproject.profile.ProfileActivity;
 
-import java.util.Map;
-import java.util.Objects;
-
 public class DashboardActivity extends AppCompatActivity {
+    private static final String TAG = "DashboardActivity";
     private TextView dashboardWelcomeText;
     private Button btnProfile;
     private Button btnEHR;
@@ -32,8 +30,10 @@ public class DashboardActivity extends AppCompatActivity {
     private Button btnViewAllAppointments;
     private Button btnBilling;
     private Button btnLogout;
-    private UsersData usersData;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     private String fullName;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +52,10 @@ public class DashboardActivity extends AppCompatActivity {
             actionBar.setTitle("Dashboard");
         }
 
-        // Initialize Firebase Auth
-        usersData = new UsersData();
+        // Initialize Firebase instances
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
 
         // Initialize UI elements
         dashboardWelcomeText = findViewById(R.id.dashboardWelcomeText);
@@ -64,24 +66,14 @@ public class DashboardActivity extends AppCompatActivity {
         btnBilling = findViewById(R.id.btnBilling);
         btnLogout = findViewById(R.id.btnLogout);
 
-        // Retrieve data and handle it using a callback
-        usersData.getUsers(new UserCallback() {
-            @Override
-            public void onCallback(Map<String, Object> userData) {
-                if (userData != null) {
-                    // Handle the retrieved data
-                    Log.d("TAG", "User Data: " + userData);
-                    // Example: Get full name
-                    fullName = Objects.requireNonNull(userData.get("fullName")).toString();
-
-                    // Update UI with full name
-                    String welcomeText = getString(R.string.welcome_text, fullName);
-                    dashboardWelcomeText.setText(welcomeText);
-                } else {
-                    Log.e("Error", "No user data found");
-                }
-            }
-        });
+        // Get current user
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            userId = currentUser.getUid();
+            fetchUserName(userId);
+        } else {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+        }
 
         // Set click listener to redirect to Profile Screen
         btnProfile.setOnClickListener(v -> {
@@ -91,9 +83,7 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
         // Set click listener to check EHR and redirect
-        btnEHR.setOnClickListener(v -> {
-            checkEHRAndRedirect();
-        });
+        btnEHR.setOnClickListener(v -> checkEHRAndRedirect());
 
         // Set click listener to redirect to Booking Appointment Screen
         btnAppointmentScheduling.setOnClickListener(v -> {
@@ -118,7 +108,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         // Set click listener for the logout button
         btnLogout.setOnClickListener(v -> {
-            usersData.logout();
+            //usersData.logout();
+            mAuth.signOut();
             // After signing out, redirect the user to the login activity
             Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -127,8 +118,29 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
+    private void fetchUserName(String userId) {
+        db.collection("users").document(userId).get()
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        fullName = document.getString("fullName");
+
+                        // Update UI with full name
+                        String welcomeText = getString(R.string.welcome_text, fullName);
+                        dashboardWelcomeText.setText(welcomeText);
+                    } else {
+                        Log.d(TAG, "No such document");
+                        Toast.makeText(DashboardActivity.this, "No user data found", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                    Toast.makeText(DashboardActivity.this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                }
+            });
+    }
+
     private void checkEHRAndRedirect() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("ehr").whereEqualTo("uid", userId).get()

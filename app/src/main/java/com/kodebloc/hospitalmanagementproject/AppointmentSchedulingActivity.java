@@ -20,21 +20,23 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.kodebloc.hospitalmanagementproject.model.UserCallback;
-import com.kodebloc.hospitalmanagementproject.model.UsersData;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class AppointmentSchedulingActivity extends AppCompatActivity {
-
+    private static final String TAG = "AppointmentSchedulingActivity";
     private TextView patientNameUI;
     private EditText etAppointmentDate, etAppointmentTime;
     private Spinner spinnerDoctor;
     private Button btnBookAppointment;
-    private UsersData usersData;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
     private String fullName;
     private String uid;
 
@@ -66,8 +68,9 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
         };
         getOnBackPressedDispatcher().addCallback(this, callback);
 
-        // Initialize Firebase Auth
-        usersData = new UsersData();
+        // Initialize Firebase instances
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         // Initialize UI elements
         patientNameUI = findViewById(R.id.patientNameUI);
@@ -76,25 +79,14 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
         etAppointmentTime = findViewById(R.id.etAppointmentTime);
         btnBookAppointment = findViewById(R.id.btnBookAppointment);
 
-        // Retrieve data and handle it using a callback
-        usersData.getUsers(new UserCallback() {
-            @Override
-            public void onCallback(Map<String, Object> userData) {
-                if (userData != null) {
-                    // Handle the retrieved data
-                    Log.d("TAG", "User Data: " + userData);
-                    // Example: Get full name
-                    fullName = Objects.requireNonNull(userData.get("fullName")).toString();
-                    uid = Objects.requireNonNull(userData.get("uid")).toString();
-
-                    // Set the patient name in the UI
-                    String getName = getString(R.string.booking_patient_name, fullName);
-                    patientNameUI.setText(getName);
-                } else {
-                    Log.d("TAG", "No user data found");
-                }
-            }
-        });
+        // Get current user
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            uid = currentUser.getUid();
+            fetchPatientName(uid);
+        } else {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+        }
 
         // Set up spinner with doctors/specialists/departments
         String[] doctors = {"Dr. Patel - Cardiology", "Dr. Rao - Neurology", "Dr. Mehta - Orthopedics", "Dr. Sharma - Dermatology", "Dr. Verma - Pediatrics", "Dr. Iyer - Gastroenterology"};
@@ -119,6 +111,28 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
         // Handle the action bar's up button
         finish();
         return true;
+    }
+
+    // Fetch patient name from Firestore
+    private void fetchPatientName(String userId) {
+        db.collection("users").document(userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            fullName = document.getString("fullName");
+                            // Set the patient name in the UI
+                            String getName = getString(R.string.booking_patient_name, fullName);
+                            patientNameUI.setText(getName);
+                        } else {
+                            Log.d(TAG, "No such document");
+                            Toast.makeText(AppointmentSchedulingActivity.this, "No user data found", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                        Toast.makeText(AppointmentSchedulingActivity.this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     // Method to show date picker dialog
@@ -168,7 +182,7 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
             return;
         }
 
-        if (usersData.getCurrentUser() != null) {
+        if (mAuth.getCurrentUser() != null) {
 
             // Create a map to hold appointment details
             Map<String, Object> appointmentData = new HashMap<>();
@@ -181,7 +195,7 @@ public class AppointmentSchedulingActivity extends AppCompatActivity {
             appointmentData.put("appointmentTime", appointmentTime);
 
             // Save appointment details to Firestore
-            usersData.getDb().collection("appointments")
+            db.collection("appointments")
                     .add(appointmentData)
                     .addOnSuccessListener(documentReference -> {
                         Log.d("AppointmentSchedulingActivity", "Appointment booked successfully");
