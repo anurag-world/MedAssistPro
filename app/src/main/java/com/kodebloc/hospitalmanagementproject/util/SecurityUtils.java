@@ -5,16 +5,19 @@ import android.security.keystore.KeyProperties;
 
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
+import java.util.Base64;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
-import java.util.Base64;
 
 public class SecurityUtils {
     private static final String KEY_ALIAS = "hospital_key";
     private static final String ANDROID_KEYSTORE = "AndroidKeyStore";
     private static final String TRANSFORMATION = "AES/GCM/NoPadding";
+    private static final int IV_SIZE = 12; // Recommended GCM IV size is 12 bytes
+    private static final int TAG_LENGTH_BIT = 128;
 
     public static void generateKey() throws Exception {
         KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE);
@@ -36,20 +39,29 @@ public class SecurityUtils {
     public static String encryptData(String data) throws Exception {
         Cipher cipher = Cipher.getInstance(TRANSFORMATION);
         cipher.init(Cipher.ENCRYPT_MODE, getSecretKey());
-        byte[] encryptionIv = cipher.getIV();
+        byte[] iv = cipher.getIV();
         byte[] encryptedData = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
-        byte[] combined = new byte[encryptionIv.length + encryptedData.length];
-        System.arraycopy(encryptionIv, 0, combined, 0, encryptionIv.length);
-        System.arraycopy(encryptedData, 0, combined, encryptionIv.length, encryptedData.length);
+
+        byte[] combined = new byte[IV_SIZE + encryptedData.length];
+        System.arraycopy(iv, 0, combined, 0, IV_SIZE);
+        System.arraycopy(encryptedData, 0, combined, IV_SIZE, encryptedData.length);
+
         return Base64.getEncoder().encodeToString(combined);
     }
 
     public static String decryptData(String encryptedData) throws Exception {
-        byte[] decodedData = Base64.getDecoder().decode(encryptedData);
+        byte[] combined = Base64.getDecoder().decode(encryptedData);
+        byte[] iv = new byte[IV_SIZE];
+        byte[] encryptedBytes = new byte[combined.length - IV_SIZE];
+
+        System.arraycopy(combined, 0, iv, 0, IV_SIZE);
+        System.arraycopy(combined, IV_SIZE, encryptedBytes, 0, encryptedBytes.length);
+
         Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-        GCMParameterSpec spec = new GCMParameterSpec(128, decodedData, 0, 12);
+        GCMParameterSpec spec = new GCMParameterSpec(TAG_LENGTH_BIT, iv);
         cipher.init(Cipher.DECRYPT_MODE, getSecretKey(), spec);
-        byte[] decryptedData = cipher.doFinal(decodedData, 12, decodedData.length - 12);
+
+        byte[] decryptedData = cipher.doFinal(encryptedBytes);
         return new String(decryptedData, StandardCharsets.UTF_8);
     }
 }
