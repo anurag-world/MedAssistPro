@@ -1,2 +1,2 @@
-# hospital-management
- Hospital Management System
+# MedAssistPro Project
+ Hospital Services & Management System
