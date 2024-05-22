@@ -122,6 +122,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    // Load user data from Firestore
     private void loadUserData(String uid) {
         db.collection("users").document(uid).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -145,10 +146,10 @@ public class ProfileActivity extends AppCompatActivity {
                             etInsuranceInfo.setText(insuranceInfo);
                         } catch (Exception e) {
                             Log.e("DecryptError", "Error decrypting data", e);
-                            Toast.makeText(this, "Error displaying profile data", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Error decrypting data. Please try again.", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(this, "No profile data found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No user data found", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
