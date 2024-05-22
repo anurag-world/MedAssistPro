@@ -47,4 +47,5 @@
 
     <!-- Billing Activity -->
     <string name="billing">Billing</string>
+    <string name="logo">Logo</string>
 </resources>
