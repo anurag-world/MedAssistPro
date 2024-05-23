@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Hospital Management Project</string>
+    <string name="app_name">MedAssistPro</string>
+
+    <!-- Register Activity -->
     <string name="register">Register</string>
     <string name="full_name">Full Name</string>
     <string name="age">Age</string>
@@ -8,6 +10,8 @@
     <string name="emergency_contact">Emergency Contact</string>
     <string name="patient_registration">Patient Registration</string>
     <string name="patient_registration_main">Patient Registration</string>
+
+    <!-- Appointment Activity -->
     <string name="date_format">%1$d/%2$d/%3$d</string>
     <string name="time_format">%1$d:%2$02d %3$s</string>
     <string name="save">Save</string>
