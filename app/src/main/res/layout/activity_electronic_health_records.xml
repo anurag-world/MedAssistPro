@@ -19,66 +19,103 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/electronic_health_records"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:layout_gravity="center"
-                android:paddingBottom="16dp"/>
+                android:gravity="center"
+                android:layout_marginVertical="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/patient_name"
+                android:layout_marginVertical="8dp"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tvPatientName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Patient Name"
+                android:textStyle="bold"
+                android:text="@string/patient_name"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/medical_history"
                 android:textSize="18sp"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginTop="16dp" />
 
             <EditText
                 android:id="@+id/etMedicalHistory"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Medical History"
+                android:hint="@string/medical_history"
                 android:autofillHints="autofillHintsHistory"
-                android:inputType="textMultiLine"
-                android:layout_marginBottom="16dp" />
+                android:inputType="textMultiLine" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/diagnoses"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
 
             <EditText
                 android:id="@+id/etDiagnoses"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Diagnoses"
+                android:hint="@string/diagnoses"
                 android:autofillHints="autofillHintsDiagnoses"
-                android:inputType="text"
-                android:layout_marginBottom="16dp" />
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/medications"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
 
             <EditText
                 android:id="@+id/etMedications"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Medications"
+                android:hint="@string/medications"
                 android:autofillHints="autofillHintsMedications"
-                android:inputType="text"
-                android:layout_marginBottom="16dp" />
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lab_results"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
 
             <EditText
                 android:id="@+id/etLabResults"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Lab Results"
+                android:hint="@string/lab_results"
                 android:autofillHints="autofillHintsLabResults"
-                android:inputType="text"
-                android:layout_marginBottom="16dp" />
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/treatment_plans"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
 
             <EditText
                 android:id="@+id/etTreatmentPlans"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Treatment Plans"
+                android:hint="@string/treatment_plans"
                 android:autofillHints="autofillHintsTreatmentPlans"
-                android:inputType="textMultiLine"
-                android:layout_marginBottom="16dp" />
+                android:inputType="textMultiLine" />
 
             <Button
                 android:id="@+id/btnSave"
@@ -89,6 +126,7 @@
                 android:textSize="16sp"
                 android:backgroundTint="@color/primary_dark"
                 android:textColor="@color/text"
+                android:layout_marginTop="16dp"
                 app:cornerRadius="8dp" />
         </LinearLayout>
     </ScrollView>
