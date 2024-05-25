@@ -1,6 +1,14 @@
 package com.kodebloc.hospitalmanagementproject.profile;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
@@ -10,20 +18,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.kodebloc.hospitalmanagementproject.R;
-
-import android.util.Log;
-import android.content.Context;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.kodebloc.hospitalmanagementproject.R;
 import com.kodebloc.hospitalmanagementproject.util.SecurityUtils;
 
 import java.util.HashMap;
@@ -127,26 +125,27 @@ public class ProfileActivity extends AppCompatActivity {
         db.collection("users").document(uid).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        try {
-                            // Get and decrypt data
-                            String fullName = documentSnapshot.getString("fullName");
-                            String age = documentSnapshot.getString("age");
-                            String email = documentSnapshot.getString("email");
-                            String encryptedEmergencyContact = documentSnapshot.getString("emergencyContact");
-                            String encryptedInsuranceInfo = documentSnapshot.getString("insuranceInfo");
+                        // Get and decrypt data
+                        String fullName = documentSnapshot.getString("fullName");
+                        String age = documentSnapshot.getString("age");
+                        String email = documentSnapshot.getString("email");
+                        String encryptedEmergencyContact = documentSnapshot.getString("emergencyContact");
+                        String encryptedInsuranceInfo = documentSnapshot.getString("insuranceInfo");
 
+                        etFullName.setText(fullName);
+                        etAge.setText(age);
+                        etEmail.setText(email);
+
+                        try {
                             String emergencyContact = SecurityUtils.decryptData(encryptedEmergencyContact);
                             String insuranceInfo = SecurityUtils.decryptData(encryptedInsuranceInfo);
 
                             // Display data
-                            etFullName.setText(fullName);
-                            etAge.setText(age);
-                            etEmail.setText(email);
                             etEmergencyContact.setText(emergencyContact);
                             etInsuranceInfo.setText(insuranceInfo);
                         } catch (Exception e) {
                             Log.e("DecryptError", "Error decrypting data", e);
-                            Toast.makeText(this, "Error decrypting data. Please try again.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Error decrypting data. Please enter data again.", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(this, "No user data found", Toast.LENGTH_SHORT).show();

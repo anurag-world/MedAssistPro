@@ -141,21 +141,8 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void checkEHRAndRedirect() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("ehr").whereEqualTo("uid", userId).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        if (!task.getResult().isEmpty()) {
-                            Toast.makeText(DashboardActivity.this, "Health records already exist", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Intent intent = new Intent(DashboardActivity.this, ElectronicHealthRecordsActivity.class);
-                            startActivity(intent);
-                        }
-                    } else {
-                        Log.e("Error", "Error checking EHR", task.getException());
-                        Toast.makeText(DashboardActivity.this, "Error checking EHR", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        // Open EHR Activity
+        Intent intent = new Intent(DashboardActivity.this, ElectronicHealthRecordsActivity.class);
+        startActivity(intent);
     }
 }

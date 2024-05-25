@@ -54,7 +54,7 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
         // Set up the action bar with title and back button
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("All Appointments");
+            actionBar.setTitle("Electronic Health records");
             actionBar.setDisplayHomeAsUpEnabled(true); // Enable back button
         }
 
@@ -86,16 +86,10 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
         if (currentUser != null) {
             userId = currentUser.getUid();
             fetchPatientName(userId);
+            fetchEHRData(userId);
         } else {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
-        }
-
-        // Initialize encryption key
-        try {
-            SecurityUtils.generateKey(); // Generate the encryption key once
-        } catch (Exception e) {
-            Log.e("GenerateEncryptionError", "An error occurred:", e);
-            Toast.makeText(this, "Error initializing encryption key", Toast.LENGTH_SHORT).show();
+            finish();
         }
 
         btnSave.setOnClickListener(v -> saveEHR());
@@ -153,6 +147,33 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
             });
     }
 
+    private void fetchEHRData(String userId) {
+        db.collection("ehr").document(userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            try {
+                                etMedicalHistory.setText(SecurityUtils.decryptData(document.getString("medicalHistory")));
+                                etDiagnoses.setText(SecurityUtils.decryptData(document.getString("diagnoses")));
+                                etMedications.setText(SecurityUtils.decryptData(document.getString("medications")));
+                                etLabResults.setText(SecurityUtils.decryptData(document.getString("labResults")));
+                                etTreatmentPlans.setText(SecurityUtils.decryptData(document.getString("treatmentPlans")));
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error decrypting data", e);
+                                Toast.makeText(this, "Error decrypting data", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Log.d(TAG, "No such document");
+                            Toast.makeText(this, "No EHR data found", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                        Toast.makeText(this, "Failed to fetch EHR data", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     private void saveEHR() {
         String medicalHistory = etMedicalHistory.getText().toString().trim();
         String diagnoses = etDiagnoses.getText().toString().trim();
@@ -187,8 +208,8 @@ public class ElectronicHealthRecordsActivity extends AppCompatActivity {
             ehr.put("uid", userId);
 
             // Save EHR details to Firestore
-            db.collection("ehr")
-                    .add(ehr)
+            db.collection("ehr").document(userId)
+                    .set(ehr)
                     .addOnSuccessListener(documentReference -> {
                         Toast.makeText(ElectronicHealthRecordsActivity.this, "EHR saved successfully", Toast.LENGTH_LONG).show();
                         // Redirect to DashboardActivity
