@@ -27,15 +27,19 @@ import com.kodebloc.hospitalmanagementproject.model.Appointment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 public class ViewAllAppointmentsActivity extends AppCompatActivity {
 
     private static final String TAG = "ViewAllAppointmentsActivity";
-    private RecyclerView recyclerViewAppointments;
-    private AppointmentsAdapter adapter;
-    private List<Appointment> appointmentList;
+    private RecyclerView recyclerViewUpcomingAppointments;
+    private RecyclerView recyclerViewCompletedAppointments;
+    private AppointmentsAdapter upcomingAdapter;
+    private AppointmentsAdapter completedAdapter;
+    private List<Appointment> upcomingAppointmentsList;
+    private List<Appointment> completedAppointmentsList;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
 
@@ -72,13 +76,18 @@ public class ViewAllAppointmentsActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         // Initialize UI elements
-        recyclerViewAppointments = findViewById(R.id.recyclerViewAppointments);
-        recyclerViewAppointments.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewUpcomingAppointments = findViewById(R.id.recyclerViewUpcomingAppointments);
+        recyclerViewCompletedAppointments = findViewById(R.id.recyclerViewCompletedAppointments);
+        recyclerViewUpcomingAppointments.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewCompletedAppointments.setLayoutManager(new LinearLayoutManager(this));
 
         // Initialize the appointment list and adapter
-        appointmentList = new ArrayList<>();
-        adapter = new AppointmentsAdapter(this, appointmentList);
-        recyclerViewAppointments.setAdapter(adapter);
+        upcomingAppointmentsList = new ArrayList<>();
+        completedAppointmentsList = new ArrayList<>();
+        upcomingAdapter = new AppointmentsAdapter(this, upcomingAppointmentsList);
+        completedAdapter = new AppointmentsAdapter(this, completedAppointmentsList);
+        recyclerViewUpcomingAppointments.setAdapter(upcomingAdapter);
+        recyclerViewCompletedAppointments.setAdapter(completedAdapter);
 
         // Fetch appointments for the current user
         fetchAppointments();
@@ -92,6 +101,7 @@ public class ViewAllAppointmentsActivity extends AppCompatActivity {
         return true;
     }
 
+    // Fetch appointments from Firestore
     private void fetchAppointments() {
         String userId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
         db.collection("appointments")
@@ -104,23 +114,41 @@ public class ViewAllAppointmentsActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Appointment appointment = document.toObject(Appointment.class);
                                 appointment.setId(document.getId()); // Set the document ID
-                                appointmentList.add(appointment);
+                                categorizeAppointment(appointment);
                             }
 
                             // Sort the list by appointment date and time
-                            Collections.sort(appointmentList, new Comparator<Appointment>() {
-                                @Override
-                                public int compare(Appointment a1, Appointment a2) {
-                                    return a1.getAppointmentDateTime().compareTo(a2.getAppointmentDateTime());
-                                }
-                            });
+                            sortAppointments(upcomingAppointmentsList);
+                            sortAppointments(completedAppointmentsList);
+
                             // Notify the adapter that the data has changed
-                            adapter.notifyDataSetChanged();
+                            upcomingAdapter.notifyDataSetChanged();
+                            completedAdapter.notifyDataSetChanged();
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                             Toast.makeText(ViewAllAppointmentsActivity.this, "Error getting appointments.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
+    }
+
+    // Categorize appointments based on their date and time
+    private void categorizeAppointment(Appointment appointment) {
+        Date now = new Date();
+        if (appointment.getAppointmentDateTime().before(now)) {
+            completedAppointmentsList.add(appointment);
+        } else {
+            upcomingAppointmentsList.add(appointment);
+        }
+    }
+
+    // Sort the list of appointments by date and time
+    private void sortAppointments(List<Appointment> appointments) {
+        Collections.sort(appointments, new Comparator<Appointment>() {
+            @Override
+            public int compare(Appointment a1, Appointment a2) {
+                return a1.getAppointmentDateTime().compareTo(a2.getAppointmentDateTime());
+            }
+        });
     }
 }
