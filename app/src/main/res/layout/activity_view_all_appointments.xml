@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_view_all_appointments"
     android:layout_width="match_parent"
@@ -11,11 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp"
-        tools:context=".ViewAllAppointmentsActivity">
+        android:padding="16dp">
 
-        <!-- Title TextView -->
+        <!-- Title TextView for Upcoming Appointments -->
         <TextView
+            android:id="@+id/titleUpcomingAppointments"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/upcoming_appointments"
@@ -24,11 +23,31 @@
             android:gravity="center"
             android:layout_marginBottom="16dp" />
 
-        <!-- RecyclerView for displaying appointments -->
+        <!-- RecyclerView for displaying upcoming appointments -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewAppointments"
+            android:id="@+id/recyclerViewUpcomingAppointments"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Title TextView for Completed Appointments -->
+        <TextView
+            android:id="@+id/titleCompletedAppointments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/completed_appointments"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- RecyclerView for displaying completed appointments -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewCompletedAppointments"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

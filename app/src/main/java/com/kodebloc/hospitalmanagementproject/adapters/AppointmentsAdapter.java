@@ -64,7 +64,7 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
                         if (task.isSuccessful()) {
                             appointmentList.remove(position);
                             notifyItemRemoved(position);
-                            Toast.makeText(context, "Appointment deleted successfully. The hospital may contact you for confirmation.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Appointment deleted successfully.", Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(context, "Error deleting appointment", Toast.LENGTH_SHORT).show();
                         }
