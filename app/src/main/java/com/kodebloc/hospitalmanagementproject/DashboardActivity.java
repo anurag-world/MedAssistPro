@@ -24,12 +24,6 @@ import com.kodebloc.hospitalmanagementproject.profile.ProfileActivity;
 public class DashboardActivity extends AppCompatActivity {
     private static final String TAG = "DashboardActivity";
     private TextView dashboardWelcomeText;
-    private Button btnProfile;
-    private Button btnEHR;
-    private Button btnAppointmentScheduling;
-    private Button btnViewAllAppointments;
-    private Button btnBilling;
-    private Button btnLogout;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private String fullName;
@@ -56,15 +50,8 @@ public class DashboardActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-
         // Initialize UI elements
         dashboardWelcomeText = findViewById(R.id.dashboardWelcomeText);
-        btnProfile = findViewById(R.id.btnProfile);
-        btnEHR = findViewById(R.id.btnEHR);
-        btnAppointmentScheduling = findViewById(R.id.btnAppointmentScheduling);
-        btnViewAllAppointments = findViewById(R.id.btnViewAllAppointments);
-        btnBilling = findViewById(R.id.btnBilling);
-        btnLogout = findViewById(R.id.btnLogout);
 
         // Get current user
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -73,41 +60,46 @@ public class DashboardActivity extends AppCompatActivity {
             fetchUserName(userId);
         } else {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            finish();
         }
 
         // Set click listener to redirect to Profile Screen
-        btnProfile.setOnClickListener(v -> {
+        findViewById(R.id.cardProfile).setOnClickListener(v -> {
             // Open Profile Activity
             Intent intent = new Intent(DashboardActivity.this, ProfileActivity.class);
             startActivity(intent);
         });
 
         // Set click listener to check EHR and redirect
-        btnEHR.setOnClickListener(v -> checkEHRAndRedirect());
+        findViewById(R.id.cardEHR).setOnClickListener(v -> {
+            // Open EHR Activity
+            Intent intent = new Intent(DashboardActivity.this, ElectronicHealthRecordsActivity.class);
+            startActivity(intent);
+        });
 
         // Set click listener to redirect to Booking Appointment Screen
-        btnAppointmentScheduling.setOnClickListener(v -> {
+        findViewById(R.id.cardAppointmentScheduling).setOnClickListener(v -> {
             // Open Appointment Scheduling Activity
             Intent intent = new Intent(DashboardActivity.this, AppointmentSchedulingActivity.class);
             startActivity(intent);
         });
 
         // Set click listener to redirect to View All Appointments Screen
-        btnViewAllAppointments.setOnClickListener(v -> {
+        findViewById(R.id.cardViewAllAppointments).setOnClickListener(v -> {
             // Open View All Appointments Activity
             Intent intent = new Intent(DashboardActivity.this, ViewAllAppointmentsActivity.class);
             startActivity(intent);
         });
 
         // Set click listener to redirect to Billing Screen
-        btnBilling.setOnClickListener(v -> {
+        findViewById(R.id.cardBilling).setOnClickListener(v -> {
             // Open Billing Activity
             Intent intent = new Intent(DashboardActivity.this, BillingActivity.class);
             startActivity(intent);
         });
 
         // Set click listener for the logout button
-        btnLogout.setOnClickListener(v -> {
+        findViewById(R.id.cardLogout).setOnClickListener(v -> {
             //usersData.logout();
             mAuth.signOut();
             // After signing out, redirect the user to the login activity
@@ -138,11 +130,5 @@ public class DashboardActivity extends AppCompatActivity {
                     Toast.makeText(DashboardActivity.this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
                 }
             });
-    }
-
-    private void checkEHRAndRedirect() {
-        // Open EHR Activity
-        Intent intent = new Intent(DashboardActivity.this, ElectronicHealthRecordsActivity.class);
-        startActivity(intent);
     }
 }
