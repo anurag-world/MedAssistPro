@@ -23,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.kodebloc.hospitalmanagementproject.DashboardActivity;
 import com.kodebloc.hospitalmanagementproject.PatientRegistrationActivity;
 import com.kodebloc.hospitalmanagementproject.R;
+import com.kodebloc.hospitalmanagementproject.util.InputValidator;
 
 public class LoginActivity extends AppCompatActivity {
     // Declare variables
@@ -92,9 +93,14 @@ public class LoginActivity extends AppCompatActivity {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
-        // Check if email and password are empty
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(LoginActivity.this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+        // Validate email and password
+        if (!InputValidator.isValidEmail(email)) {
+            Toast.makeText(LoginActivity.this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!InputValidator.isValidPassword(password)) {
+            Toast.makeText(LoginActivity.this, "Please enter a valid password (at least 6 characters)", Toast.LENGTH_SHORT).show();
             return;
         }
 
