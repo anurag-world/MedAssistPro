@@ -46,12 +46,20 @@ dependencies {
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
 
+    // Unit testing
+    testImplementation(libs.junit)
+    testImplementation ("org.mockito:mockito-core:3.12.4")
+    testImplementation ("org.mockito:mockito-inline:3.12.4")
+
+    // AndroidX Test - JVM testing
+    androidTestImplementation(libs.ext.junit)
+    testImplementation ("androidx.test:core:1.5.0")
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.gridlayout)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+
+    //androidTestImplementation(libs.espresso.core)
 }
