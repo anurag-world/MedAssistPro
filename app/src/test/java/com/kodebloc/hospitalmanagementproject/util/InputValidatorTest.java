@@ -38,7 +38,7 @@ public class InputValidatorTest {
     }
 
     @Test
-    public void passwordValidator_CorrectPasswordSimple_ReturnsTrue() {
+    public void passwordValidator_CorrectPassword_ReturnsTrue() {
         assertTrue(InputValidator.isValidPassword("password123"));
     }
 
