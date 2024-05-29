@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class InputValidatorTest {
+public class EmailPasswordTest {
 
     @Test
     public void emailValidator_CorrectEmail_ReturnsTrue() {
