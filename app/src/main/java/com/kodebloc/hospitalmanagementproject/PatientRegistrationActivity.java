@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -24,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.kodebloc.hospitalmanagementproject.util.InputValidator;
 import com.kodebloc.hospitalmanagementproject.util.SecurityUtils;
 
 import java.util.HashMap;
@@ -136,10 +136,14 @@ public class PatientRegistrationActivity extends AppCompatActivity {
         String emergencyContact = etEmergencyContact.getText().toString().trim();
 
         // Check if any required field is empty
-        if (TextUtils.isEmpty(fullName) || TextUtils.isEmpty(age) ||
-                TextUtils.isEmpty(insuranceInfo) ||
-                TextUtils.isEmpty(emergencyContact)) {
+        if (TextUtils.isEmpty(age) || TextUtils.isEmpty(insuranceInfo)) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Validate fullName
+        if (!InputValidator.isValidName(fullName)) {
+            Toast.makeText(this, "Please enter a valid Full Name", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -155,7 +159,7 @@ public class PatientRegistrationActivity extends AppCompatActivity {
         }
 
         // Validate emergency contact format
-        if (!Patterns.PHONE.matcher(emergencyContact).matches()) {
+        if (!InputValidator.isValidPhoneNumber(emergencyContact)) {
             Toast.makeText(this, "Please enter a valid emergency contact number", Toast.LENGTH_SHORT).show();
             return false;
         }
